@@ -1,2 +1,0 @@
-# energiesparen
-Energiespar-Tipps-App
