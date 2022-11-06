@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 
+import { useRef, useState, useEffect } from 'react'
 import * as React from 'react';
+
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -11,11 +13,13 @@ import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CommentIcon from '@mui/icons-material/Comment';
+import { TextField, Button } from '@mui/material';
+// import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ParkIcon from '@mui/icons-material/Park';
+
 
 // npm install @mui/material
 // npm install @emotion/react
@@ -25,18 +29,33 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const Post = () => {
 
+    const commentRef = useRef()
+    const likeCount = useRef(0)
+
+    const [expanded, setExpanded] = React.useState(false);
+    const [commentInput, setCommentInput] = React.useState(false);
+    const [likeValue, setLikeValue] = useState("");
+
+      
     const posts = [{
         id: uuidv4(),
         userId: uuidv4(),
-        date: "",
+        date: "05. November 2022",
         title: "Wäschetrocknen in der Sonne",
         text: "Heute war wieder ein perfekter Tag, um die Wäsche draußen zu trocknen.",
         link: "",
         picture: "??",
+        alttext: "Bildbeschreibung...",
         comments: [
             {
-                userId: "",
-                text: ""
+                userId: "usernummereins",
+                date: "datum",
+                text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+            },
+            {
+                userId: "usernummerdreis",
+                date: "datum",
+                text: "tua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
             }
         ]
     },
@@ -48,113 +67,206 @@ const Post = () => {
         text: "Hey, ich habe es heute geschafft, mein Smartphone für 3 Stunden ausgeschaltet zu lassen! :-)",
         link: "",
         picture: "??",
+        alttext: "Bildbeschreibung...",
         comments: [
             {
-                userId: "",
-                text: ""
+                id: uuidv4(),
+                userId: "usernummer2",
+                date: "datum",
+                text: "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
             }
         ]
     }
     ]
+
+    const addComment = (String) => {
+        // return ()
+    }
+
+    const newComment = () => {
+        if
+            ((commentRef.current.value !== "") !== "") {
+            addComment(commentRef.current.value)
+        }
+        commentRef.current.value = "";
+        newCommentInput();
+    }
 
     const ExpandMore = styled((props) => {
         const { expand, ...other } = props;
         return <IconButton {...other} />;
     })(({ theme, expand }) => ({
         transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-        marginLeft: 'auto',
+        marginRight: 0,
         transition: theme.transitions.create('transform', {
             duration: theme.transitions.duration.shortest,
         }),
     }));
 
-    // export default function RecipeReviewCard() {
-    const [expanded, setExpanded] = React.useState(false);
-
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
+    const newCommentInput = () => {
+        setCommentInput(!commentInput);
+    }
+
+    const handleSendClick = () => {
+        newComment();
+    }
+
+    // useEffect(() => {
+    //     likeCount.current = likeCount.current + 1;
+    //   }, likeValue);
+
+    const newLikeClick = () => {
+        setLikeValue(!likeValue)
+        likeCount.current = likeCount.current + 1; 
+    }
+
+    console.log("LikeCounter:  ",likeCount.current )
+
+    // const theme2 = createTheme({
+    //     components: {
+    //         CardContent: {
+    //             disableTypography: false,
+    //             fontSize: '3rem'
+    //         }
+    //     }
+    // })
+
+    // const theme = createTheme({
+    //     components: {
+    //         // Name of the component
+    //         MuiButton: {
+    //             styleOverrides: {
+    //                 // Name of the slot
+    //                 root: {
+    //                     // Some CSS
+    //                     fontSize: '1rem',
+    //                 },
+    //             },
+    //         },
+    //         CardHeader: {
+    //             styleOverrides: {
+    //                 disableTypography: false,
+    //                 titleTypographyProps: {
+    //                     fontSize: '5.0rem',
+    //                     color: 'red'
+    //                 },
+    //                 subheader: {
+    //                     color: 'blue'
+    //                 }
+    //             }
+    //         },
+    //         Card: {
+    //             margin: '2rem'
+    //         }
+    //     }
+    // });
+
     return (
-        <Card sx={{ maxWidth: 345 }}>
+        // <ThemeProvider theme={theme2}>
+        <Card sx={{ maxWidth: 380, margin: 5, fontSize: 16 }}>
             <CardHeader
                 avatar={
-                    <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                    <Avatar
+                        sx={{ bgcolor: '#4c7257' }}
+                        aria-label="recipe">
                         R
                     </Avatar>
                 }
-                action={
-                    <IconButton aria-label="settings">
-                        <MoreVertIcon />
-                    </IconButton>
-                }
                 title="userName1"
-                subheader="September 14, 2016"
+                subheader="September 14, 2016"          // posts.date
             />
-            <CardHeader
-                title="Titel"
+            <CardHeader titleTypographyProps={
+                { variant: 'subtitle1', fontWeight: 'bold' }}
+                title={posts[0].title}   // posts.title
             />
             <CardMedia
                 component="img"
                 height="194"
-                image="./src/components/postcards/laundry-3390806.jpg"
-                alt="Wäscheständer mit Wäsche"
+                image={require('../images/postcards/laundry-3390806.jpg')}
+                alt={posts[0].alttext}
             />
             <CardContent>
                 <Typography variant="body2" color="text.secondary">
-                    This impressive paella is a perfect party dish and a fun meal to cook
-                    together with your guests. Add 1 cup of frozen peas along with the mussels,
-                    if you like.
+                    {posts[0].text}
                 </Typography>
             </CardContent>
+            <CardContent>
+                <ParkIcon />
+                test
+            </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
-                </IconButton>
+                {/* <IconButton aria-label="add to favorites">
+                        <FavoriteIcon />
+                    </IconButton> */}
+                <ParkIcon
+                    // ref={likeCount}
+                    onClick={newLikeClick} 
+                    sx={{ color: 'green' }} />
+
                 <IconButton aria-label="share">
                     <ShareIcon />
                 </IconButton>
+                <CommentIcon onClick={newCommentInput} />
+
+                <p style={{ margin: '0 0 0 auto' }} >Kommentare</p>
                 <ExpandMore
-                    // expand={expanded}
+                    expand={expanded}
                     onClick={handleExpandClick}
-                    // aria-expanded={expanded}
+                    aria-expanded={expanded}
                     aria-label="show more"
                 >
                     <ExpandMoreIcon />
                 </ExpandMore>
             </CardActions>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                    <Typography paragraph>Method:</Typography>
-                    <Typography paragraph>
-                        Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
-                        aside for 10 minutes.
-                    </Typography>
-                    <Typography paragraph>
-                        Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
-                        medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
-                        occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
-                        large plate and set aside, leaving chicken and chorizo in the pan. Add
-                        pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
-                        stirring often until thickened and fragrant, about 10 minutes. Add
-                        saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-                    </Typography>
-                    <Typography paragraph>
-                        Add rice and stir very gently to distribute. Top with artichokes and
-                        peppers, and cook without stirring, until most of the liquid is absorbed,
-                        15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
-                        mussels, tucking them down into the rice, and cook again without
-                        stirring, until mussels have opened and rice is just tender, 5 to 7
-                        minutes more. (Discard any mussels that don&apos;t open.)
-                    </Typography>
-                    <Typography>
-                        Set aside off of the heat to let rest for 10 minutes, and then serve.
-                    </Typography>
-                </CardContent>
-            </Collapse>
+            {
+                commentInput === true ?
+                    <CardContent >
+                        <TextField
+                            ref={commentRef}
+                            multiline={true}
+                            fullWidth
+                            size="small"
+                            label="Dein Kommentar"
+                            rows={5} />
+                        <Button
+                            variant="text"
+                            onClick={handleSendClick} >
+                            Senden
+                        </Button>
+                    </CardContent>
+
+                    : null
+            }
+            {
+                posts[0].comments.map(e => (
+
+                    <Collapse in={expanded} timeout="auto" unmountOnExit
+                        style={{ fontSize: '0.75rem' }} >
+                        <CardHeader
+                            titleTypographyProps={
+                                { fontSize: '1.15em', fontWeight: 'bold' }}
+                            subheaderTypographyProps={
+                                { fontSize: '1.1em' }}
+                            title={e.userId}
+                            subheader={e.date}
+                        />
+                        <CardContent >
+                            <Typography fontSize="1.2em" color="text.secondary">
+                                {e.text}
+                            </Typography>
+                        </CardContent>
+                    </Collapse>
+                ))
+            }
         </Card>
+        // </ThemeProvider>
     )
 }
+
 
 
 export default Post;
