@@ -7,10 +7,10 @@ import Post from './components/Post';
 function App() {
   return (
     <div className="App">
-      <Header />
+      {/* <Header /> */}
       <Register />
-      <Login />
-      <Post />
+      {/* <Login /> */}
+      {/* <Post /> */}
     </div>
     
   );
