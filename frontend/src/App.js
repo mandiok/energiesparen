@@ -1,6 +1,6 @@
 import  Login from './components/Login';
 import Register from './components/Register';
-
+import Post from './components/Post';
 
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
     <div className="App">
       <Register />
       <Login />
+      <Post />
     </div>
     
   );
