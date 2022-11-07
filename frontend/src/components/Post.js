@@ -1,6 +1,8 @@
+import LikeMarker from './LikeMarker';
+
 import { v4 as uuidv4 } from 'uuid';
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import * as React from 'react';
 
 import { styled } from '@mui/material/styles';
@@ -11,33 +13,32 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CommentIcon from '@mui/icons-material/Comment';
 import { TextField, Button } from '@mui/material';
-// import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ParkIcon from '@mui/icons-material/Park';
+import Box from '@mui/material/Box';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
 
+const { DateTime } = require("luxon");
 
 // npm install @mui/material
 // npm install @emotion/react
 // npm install @emotion/styled
 // npm install @mui/icons-material
 
+const LOCAL_STORAGE_KEY = "local_storage_post";
 
-const Post = () => {
+const Post = ({ index, userName, first_name }) => {
 
-    const commentRef = useRef()
-    const likeCount = useRef(0)
 
-    const [expanded, setExpanded] = React.useState(false);
-    const [commentInput, setCommentInput] = React.useState(false);
-    const [likeValue, setLikeValue] = useState("");
-
-      
-    const posts = [{
+    const postArray = [{
         id: uuidv4(),
         userId: uuidv4(),
         date: "05. November 2022",
@@ -79,10 +80,41 @@ const Post = () => {
     }
     ]
 
-    const addComment = (String) => {
-        // return ()
+    index = 0;          // wird später an Post(index) beim Aufruf übergeben
+    userName = "user__?"
+    first_name = "Max"
+    const commentRef = useRef()
+    const likeCount = useRef(0)
+
+    const [posts, setPosts] = useState(postArray);
+    const [expanded, setExpanded] = useState(false);
+    const [treecolored, setTreecolored] = useState(false);
+    const [commentInput, setCommentInput] = useState(false);
+    const [shareItem, setShareItem] = useState(false);
+
+
+    // Speichere Posts im local_storage
+    const savePostsToLocalStorage = posts => {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(posts));
+    }
+    const datefull = DateTime.now();
+    const date = datefull.setLocale('de').toLocaleString(DateTime.DATE_FULL);
+
+    // fügt einen neuen, eingegebenen Kommentar zum aktuellen Post hinzu
+    const addComment = text => {
+        const p = [...posts];
+        const comment = {
+            id: uuidv4(),
+            userId: userName,
+            date: date,
+            text: text,
+        }
+        p[index].comments.push(comment)
+        setPosts(p);
+        savePostsToLocalStorage(posts)
     }
 
+    // checkt, ob Kommentar eingegeben wurde und ruft die func() addComment auf
     const newComment = () => {
         if
             ((commentRef.current.value !== "") !== "") {
@@ -92,6 +124,7 @@ const Post = () => {
         newCommentInput();
     }
 
+    // MUI Funktion: mit einem Klick auf "ExpandMore" werden Kommentare eingeblendet
     const ExpandMore = styled((props) => {
         const { expand, ...other } = props;
         return <IconButton {...other} />;
@@ -103,130 +136,114 @@ const Post = () => {
         }),
     }));
 
+    const ParkIconC = styled(ParkIcon)(({ theme }) => ({
+        color: treecolored ? 'green' : 'grey',
+        marginRight: 0,
+    }));
+
+
+    // Ändert den Status des expanded-States
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
+    // Ändert den Status des commentInput-States
     const newCommentInput = () => {
         setCommentInput(!commentInput);
     }
 
+    const handleShareClick = () => {
+        console.log(":", shareItem)
+        setShareItem(!shareItem);
+    }
+
+    // Beim Klick auf den SendButton wird neuer Kommentar aufgenommen
     const handleSendClick = () => {
         newComment();
     }
 
-    // useEffect(() => {
-    //     likeCount.current = likeCount.current + 1;
-    //   }, likeValue);
-
+    // beim Klick auf den Baum wird ein Like vergeben oder wieder rausgenommen
     const newLikeClick = () => {
-        setLikeValue(!likeValue)
-        likeCount.current = likeCount.current + 1; 
+        if (treecolored === true) {
+            likeCount.current = likeCount.current - 1;
+        } else {
+            likeCount.current = likeCount.current + 1;
+        }
+        setTreecolored(!treecolored)
     }
 
-    console.log("LikeCounter:  ",likeCount.current )
-
-    // const theme2 = createTheme({
-    //     components: {
-    //         CardContent: {
-    //             disableTypography: false,
-    //             fontSize: '3rem'
-    //         }
-    //     }
-    // })
-
-    // const theme = createTheme({
-    //     components: {
-    //         // Name of the component
-    //         MuiButton: {
-    //             styleOverrides: {
-    //                 // Name of the slot
-    //                 root: {
-    //                     // Some CSS
-    //                     fontSize: '1rem',
-    //                 },
-    //             },
-    //         },
-    //         CardHeader: {
-    //             styleOverrides: {
-    //                 disableTypography: false,
-    //                 titleTypographyProps: {
-    //                     fontSize: '5.0rem',
-    //                     color: 'red'
-    //                 },
-    //                 subheader: {
-    //                     color: 'blue'
-    //                 }
-    //             }
-    //         },
-    //         Card: {
-    //             margin: '2rem'
-    //         }
-    //     }
-    // });
-
+    // ............... RETURN .......................................
     return (
-        // <ThemeProvider theme={theme2}>
         <Card sx={{ maxWidth: 380, margin: 5, fontSize: 16 }}>
             <CardHeader
                 avatar={
                     <Avatar
                         sx={{ bgcolor: '#4c7257' }}
                         aria-label="recipe">
-                        R
+                        {first_name.substr(1, 1).toUpperCase()}
                     </Avatar>
                 }
-                title="userName1"
-                subheader="September 14, 2016"          // posts.date
+                title={userName}
+                subheader={posts[index].date}
             />
-            <CardHeader titleTypographyProps={
-                { variant: 'subtitle1', fontWeight: 'bold' }}
-                title={posts[0].title}   // posts.title
+            <CardHeader titleTypographyProps={{
+                variant: 'subtitle1',
+                fontWeight: 'bold'
+            }}
+                title={posts[index].title}   // posts.title
             />
             <CardMedia
                 component="img"
                 height="194"
                 image={require('../images/postcards/laundry-3390806.jpg')}
-                alt={posts[0].alttext}
+                alt={posts[index].alttext}
             />
             <CardContent>
-                <Typography variant="body2" color="text.secondary">
-                    {posts[0].text}
+                <Typography
+                    variant="body2"
+                    color="text.secondary">
+                    {posts[index].text}
                 </Typography>
             </CardContent>
-            <CardContent>
-                <ParkIcon />
-                test
+            <CardContent sx={{ margin: 0, padding: 0, fontWeight: 'bold' }}>
+                <LikeMarker />
+                <Box
+                    sx={{ display: 'inline', marginLeft: 0.5 }}>
+                    {likeCount.current}
+                </Box>
             </CardContent>
             <CardActions disableSpacing>
-                {/* <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
-                    </IconButton> */}
-                <ParkIcon
-                    // ref={likeCount}
-                    onClick={newLikeClick} 
-                    sx={{ color: 'green' }} />
-
-                <IconButton aria-label="share">
+                <ParkIconC onClick={newLikeClick} />
+                <IconButton
+                    onClick={handleShareClick}
+                    aria-label="share">
                     <ShareIcon />
                 </IconButton>
                 <CommentIcon onClick={newCommentInput} />
-
                 <p style={{ margin: '0 0 0 auto' }} >Kommentare</p>
                 <ExpandMore
                     expand={expanded}
                     onClick={handleExpandClick}
                     aria-expanded={expanded}
-                    aria-label="show more"
-                >
+                    aria-label="show more">
                     <ExpandMoreIcon />
                 </ExpandMore>
             </CardActions>
             {
+                shareItem ?
+                    <CardContent sx={{ margin: 0 }}>
+                        <FacebookIcon sx={{ marginRight: 1.5 }} />
+                        <TwitterIcon sx={{ marginRight: 1.5 }} />
+                        <InstagramIcon sx={{ marginRight: 1.5 }} />
+                        <ContentCopyIcon />
+                    </CardContent>
+                    : null
+            }
+            {
                 commentInput === true ?
                     <CardContent >
                         <TextField
-                            ref={commentRef}
+                            inputRef={commentRef}
                             multiline={true}
                             fullWidth
                             size="small"
@@ -238,24 +255,27 @@ const Post = () => {
                             Senden
                         </Button>
                     </CardContent>
-
                     : null
             }
             {
-                posts[0].comments.map(e => (
-
-                    <Collapse in={expanded} timeout="auto" unmountOnExit
+                posts[index].comments.map(e => (
+                    <Collapse key={e.id} in={expanded} timeout="auto" unmountOnExit
                         style={{ fontSize: '0.75rem' }} >
                         <CardHeader
-                            titleTypographyProps={
-                                { fontSize: '1.15em', fontWeight: 'bold' }}
-                            subheaderTypographyProps={
-                                { fontSize: '1.1em' }}
+                            titleTypographyProps={{
+                                fontSize: '1.15em',
+                                fontWeight: 'bold'
+                            }}
+                            subheaderTypographyProps={{
+                                fontSize: '1.1em'
+                            }}
                             title={e.userId}
                             subheader={e.date}
                         />
                         <CardContent >
-                            <Typography fontSize="1.2em" color="text.secondary">
+                            <Typography
+                                fontSize="1.2em"
+                                color="text.secondary">
                                 {e.text}
                             </Typography>
                         </CardContent>
@@ -263,7 +283,6 @@ const Post = () => {
                 ))
             }
         </Card>
-        // </ThemeProvider>
     )
 }
 
