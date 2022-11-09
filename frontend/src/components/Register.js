@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 const theme = createTheme();
@@ -21,7 +21,7 @@ var userArray = [];
 
 //template code
  export default function SignUp() {
-  const [inputField, setInputField] = useState({
+/*   const [inputField, setInputField] = useState({
     id: uuidv4(),
     first_name: "",
     last_name: "",
@@ -29,15 +29,24 @@ var userArray = [];
     email: "",
     password: "",
     url: "",
-    message: "",});
+    message: ""}); */
+    const [inputField, setInputField] = useState(undefined); //sbstnkll modified
 
   const handleSubmit = (event) => {
     event.preventDefault();
-   
+
+    // die folgenden 2 zeilen benötigt ihr nicht, aber sind wichtig um zu verstehen
+    // das man ein formdata object nicht eifnach in die console loggen kann
+    // folgender stackoverflow thread als hinweis:
+    // https://stackoverflow.com/questions/71903417/form-data-doesnt-fill-in-react
+    const formData = new FormData(event.currentTarget); //sbstnkll added
+    [...formData.entries()].forEach(e => console.log(e)) // sbstnkll added
+
     const data = new FormData(event.target);
     console.log(inputField);
     console.log(data);
-   setInputField((prevState) => ({
+
+    setInputField((prevState) => ({
       ...prevState,
       id: uuidv4(),
       first_name: data.get('first_name'),
@@ -50,21 +59,22 @@ var userArray = [];
       
     }));
 
-    userArray.push(inputField);
+    // sbstnkll moved:
+/*     userArray.push(inputField);
     console.log(inputField);
     console.log(userArray);
-    saveToLocalStorage();
+    saveToLocalStorage(); */
   }; 
   
-  const saveToLocalStorage = () => {
-    localStorage.setItem('userArray', JSON.stringify(userArray));
+  const saveToLocalStorage = () => { //sbstnkll modified
+    localStorage.setItem('userArray', JSON.stringify(userArray)); //sbstnkll modified
   }
 
-
-
-
-
-
+  // sbstnkll added:
+  useEffect(() => {
+    if (inputField) userArray.push(inputField);
+    saveToLocalStorage();
+  }, [inputField])
 
   return (
     <ThemeProvider theme={theme}>
