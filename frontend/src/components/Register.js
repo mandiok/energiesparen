@@ -1,106 +1,196 @@
-import React, {useState} from 'react';
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+//import FormControlLabel from '@mui/material/FormControlLabel';
+//import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
+import { useState, useEffect } from 'react';
 
+
+const theme = createTheme();
 var userArray = [];
 
+//template code
+ export default function SignUp() {
+/*   const [inputField, setInputField] = useState({
+    id: uuidv4(),
+    first_name: "",
+    last_name: "",
+    user_name: "",
+    email: "",
+    password: "",
+    url: "",
+    message: ""}); */
+    const [inputField, setInputField] = useState(undefined); //sbstnkll modified
 
-function Register() {
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-    const [inputField , setInputField] = useState({
-        id: uuidv4(),
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: "",
-        message: "",
-        url:"",
-        
-    })
+    // die folgenden 2 zeilen benötigt ihr nicht, aber sind wichtig um zu verstehen
+    // das man ein formdata object nicht eifnach in die console loggen kann
+    // folgender stackoverflow thread als hinweis:
+    // https://stackoverflow.com/questions/71903417/form-data-doesnt-fill-in-react
+    const formData = new FormData(event.currentTarget); //sbstnkll added
+    [...formData.entries()].forEach(e => console.log(e)) // sbstnkll added
 
+    const data = new FormData(event.target);
+    console.log(inputField);
+    console.log(data);
 
+    setInputField((prevState) => ({
+      ...prevState,
+      id: uuidv4(),
+      first_name: data.get('first_name'),
+      last_name: data.get('last_name'),
+      user_name: data.get('user_name'),
+      email: data.get('email'),
+      password: data.get('password'),
+      url: data.get('url'),
+      message: data.get('message')
+      
+    }));
 
-    const inputsHandler = (e) =>{
-        const { name, value } = e.target;
-       setInputField((prevState) => ({
-         ...prevState,
-         [name]: value,
-       }));
-    }
-    const saveToLocalStorage = () => {
-        localStorage.setItem("userArray", JSON.stringify(userArray));
-      };
-    const submitButton = () =>{
-        if (inputField["last_name"].length <= 2){
-          alert ("Name must be at least 3 characters long");
-        }
-        if (inputField["email"].indexOf("@") === -1 ){
-          alert ("The email should contain @");
-        }
-        else {
-        userArray.push(inputField);
-        console.log(userArray);
-        saveToLocalStorage(userArray);
-        }
-    }
+    // sbstnkll moved:
+/*     userArray.push(inputField);
+    console.log(inputField);
+    console.log(userArray);
+    saveToLocalStorage(); */
+  }; 
+  
+  const saveToLocalStorage = () => { //sbstnkll modified
+    localStorage.setItem('userArray', JSON.stringify(userArray)); //sbstnkll modified
+  }
 
-    return (
-        <div>
-            <h2>Bitte gib folgende Daten zur Registrierung ein:</h2>
-            <p>Vorname:</p>
-            <input 
-            type="text" 
-            name="first_name" 
-            onChange={inputsHandler} 
-            placeholder="Vorname" 
-            value={inputField.first_name}/>
+  // sbstnkll added:
+  useEffect(() => {
+    if (inputField) userArray.push(inputField);
+    saveToLocalStorage();
+  }, [inputField])
 
-            <br/>
-            <p>Nachname:</p>
-            <input 
-            type="text" 
-            name="last_name" 
-            onChange={inputsHandler} 
-            placeholder="Nachname" 
-            value={inputField.last_name}/>
+  return (
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Registrierung als neue(r) Nutzer(in)
+          </Typography>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  autoComplete="given-name"
+                  name="first_name"
+                  required
+                  fullWidth
+                  id="first_name"
+                  label="Dein Vorname"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="last_name"
+                  label="Dein Nachname"
+                  name="last_name"
+                  autoComplete="family-name"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Addresse"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="user_name"
+                  label="Nutzername"
+                  name="user_name"
+                  autoComplete="user_name"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Passwort"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  //required
+                  fullWidth
+                  name="url"
+                  label="Deine Website"
+                  type="url"
+                  id="url"
+                  autoComplete="url"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  //required
+                  fullWidth
+                  name="message"
+                  label="Deine Nachricht"
+                  type="text"
+                  id="message"
+                  autoComplete="message"
+                />
+              </Grid>
 
-            <br/>
-            <p>Email:</p>
-            <input 
-            type="email" 
-            name="email" 
-            onChange={inputsHandler} 
-            placeholder="E-mail" 
-            value={inputField.email}/>
-
-            <p>Passwort:</p>
-            <input
-            type="password"
-            name="password"
-            onChange={inputsHandler}
-            placeholder="Passwort"
-            value={inputField.password}/>
-
-            <br/>
-            <p>Deine persönliche Nachricht:</p>
-            <input 
-            type="text" 
-            name="message"
-            onChange={inputsHandler} 
-            placeholder="Message" 
-            value={inputField.message}/>
-            <br/>
-            <p>Hast Du eine Homepage?</p>
-            <input 
-            type="url" 
-            name="url" 
-            onChange={inputsHandler} 
-            placeholder="Homepage" 
-            value={inputField.url}/>
-            <br/>
-
-            <button onClick={submitButton}>Absenden</button>
-        </div>
-    )
+            </Grid>
+            
+             <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            > 
+              Registrieren
+            </Button>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link href="#" variant="body2">
+                  Hast du schon einen Account? Hier einloggen
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
+  );
 }
-
-export default Register
