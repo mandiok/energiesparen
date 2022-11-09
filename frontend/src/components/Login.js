@@ -1,20 +1,34 @@
-import {useState} from "react";
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+//import { useState } from 'react';
 
-const userLogin = (email, password) => {
-    const userArray = JSON.parse(localStorage.getItem("userArray"));
-    const user = userArray.find(user => user.email === email && user.password === password);
-    return user;
-}
 
-const Login = () => {
-    const [inputField, setInputField] = useState({email: "", password: ""});
+const theme = createTheme();
 
-    const inputsHandler = (event) => {
-        setInputField({...inputField, [event.target.name]: event.target.value});
-    }
-
-    const submitButton = () => {
-        const user = userLogin(inputField.email, inputField.password);
+ 
+export default function SignIn() {
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const email = data.get('email');
+      const password = data.get('password');
+        userLogin(email, password);
+    };
+    const userLogin = (email, password) => {
+        const userArray = JSON.parse(localStorage.getItem("userArray"));
+        const user = userArray.find(user => user.email === email && user.password === password);
         if(user) {
             console.log("Login erfolgreich");
         }
@@ -23,32 +37,77 @@ const Login = () => {
         }
     }
 
-    return (
-        <div>
-            <h2>Bitte gib folgende Daten zur Anmeldung ein:</h2>
-            <p>Email:</p>
-            <input 
-            type="email" 
-            name="email" 
-            onChange={inputsHandler} 
-            placeholder="E-mail" 
-            value={inputField.email}/>
+    
+    
+    
 
-            <br/>
-            <p>Passwort:</p>
-            <input 
-            type="password" 
-            name="password" 
-            onChange={inputsHandler} 
-            placeholder="Passwort" 
-            value={inputField.password}/>
 
-            <br/>
-
-            <button onClick={submitButton}>Absenden</button>
-        </div>
-    )
+  return (
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Anmeldung
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Addresse"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Passwort"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Auf diesem Computer merken"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Anmelden
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Passwort vergessen?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="#" variant="body2">
+                  {"Noch keinen Account? Registrieren"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
+  );
 }
-
-export default Login;
-
