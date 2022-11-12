@@ -14,22 +14,14 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect } from 'react';
+import axios from"axios";
 
 
 const theme = createTheme();
-var userArray = [];
 
-//template code
+
  export default function SignUp() {
-/*   const [inputField, setInputField] = useState({
-    id: uuidv4(),
-    first_name: "",
-    last_name: "",
-    user_name: "",
-    email: "",
-    password: "",
-    url: "",
-    message: ""}); */
+
     const [inputField, setInputField] = useState(undefined); //sbstnkll modified
 
   const handleSubmit = (event) => {
@@ -39,12 +31,10 @@ var userArray = [];
     // das man ein formdata object nicht eifnach in die console loggen kann
     // folgender stackoverflow thread als hinweis:
     // https://stackoverflow.com/questions/71903417/form-data-doesnt-fill-in-react
-    const formData = new FormData(event.currentTarget); //sbstnkll added
-    [...formData.entries()].forEach(e => console.log(e)) // sbstnkll added
+    const formData = new FormData(event.currentTarget); 
+    [...formData.entries()].forEach(e => console.log(e)) 
 
     const data = new FormData(event.target);
-    console.log(inputField);
-    console.log(data);
 
     setInputField((prevState) => ({
       ...prevState,
@@ -58,22 +48,27 @@ var userArray = [];
       message: data.get('message')
       
     }));
-
-    // sbstnkll moved:
-/*     userArray.push(inputField);
-    console.log(inputField);
-    console.log(userArray);
-    saveToLocalStorage(); */
   }; 
   
-  const saveToLocalStorage = () => { //sbstnkll modified
-    localStorage.setItem('userArray', JSON.stringify(userArray)); //sbstnkll modified
-  }
 
-  // sbstnkll added:
+
+    const saveUserToBackend = async(userData) => {
+      
+      var config = {
+        method: 'post',
+        url: 'http://localhost:3001/register',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: JSON.stringify(userData)
+      };
+      const response = await axios(config);
+      return response;
+    }
+
+ 
   useEffect(() => {
-    if (inputField) userArray.push(inputField);
-    saveToLocalStorage();
+    if (inputField) saveUserToBackend(inputField);
   }, [inputField])
 
   return (

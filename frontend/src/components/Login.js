@@ -26,21 +26,19 @@ export default function SignIn() {
       const password = data.get('password');
         userLogin(email, password);
     };
-    const userLogin = (email, password) => {
-        const userArray = JSON.parse(localStorage.getItem("userArray"));
-        const user = userArray.find(user => user.email === email && user.password === password);
-        if(user) {
-            console.log("Login erfolgreich");
-        }
-        else {
-            console.log("Login fehlgeschlagen");
-        }
-    }
+    const userLogin = async (email, password) => {
+      const response = await fetch('http://localhost:3001/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      console.log(data);
+    };
 
     
-    
-    
-
 
   return (
     <ThemeProvider theme={theme}>
