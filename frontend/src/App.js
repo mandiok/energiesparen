@@ -3,6 +3,7 @@ import  Login from './components/Login';
 import Register from './components/Register';
 import Post from './components/Post';
 import InputPost from './components/InputPost';
+import Feed from './components/Feed';
 
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
 
       {/* <Login /> */}
       <InputPost />
-      {/* <Post /> */}
+      <Feed />
     </div>
     
   );

@@ -36,60 +36,60 @@ import { grey } from '@mui/material/colors';
 
 const LOCAL_STORAGE_KEY = "local_storage_post";
 
-const Post = ({ index, userName, userId, first_name }) => {
+const Post = ({ posts, setPosts, post, userName, userId, first_name }) => {
 
-    userId = "4626-457484-24526";
+    userId = "4626-999999-24526";
 
-    const postArray = [{
-        id: uuidv4(),
-        userId: "asdfasdgfa",
-        date: "05. November 2022",
-        title: "Wäschetrocknen in der Sonne",
-        text: "Heute war wieder ein perfekter Tag, um die Wäsche draußen zu trocknen.",
-        link: "",
-        picture: "??",
-        likes: ["4626-457484-99999", "12341-57895-24521-15415"],
-        comments: [
-            {
-                id: uuidv4(),
-                userId: "usernummereins",
-                date: "datum",
-                text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-            },
-            {
-                id: uuidv4(),
-                userId: "usernummerdreis",
-                date: "datum",
-                text: "tua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-            }
-        ]
-    },
-    {
-        id: uuidv4(),
-        userId: uuidv4(),
-        date: "",
-        title: "Smartphone ausschalten",
-        text: "Hey, ich habe es heute geschafft, mein Smartphone für 3 Stunden ausgeschaltet zu lassen! :-)",
-        link: "",
-        picture: "??",
-        likes: ["4626-457484-24526", "12341-57895-24521-15415"],
-        comments: [
-            {
-                id: uuidv4(),
-                userId: "usernummer2",
-                date: "datum",
-                text: "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
-            }
-        ]
-    }
-    ]
+    // const postArray = [{
+    //     id: uuidv4(),
+    //     userId: "asdfasdgfa",
+    //     date: "05. November 2022",
+    //     title: "Wäschetrocknen in der Sonne",
+    //     text: "Heute war wieder ein perfekter Tag, um die Wäsche draußen zu trocknen.",
+    //     link: "",
+    //     picture: "??",
+    //     likes: ["4626-457484-99999", "12341-57895-24521-15415"],
+    //     comments: [
+    //         {
+    //             id: uuidv4(),
+    //             userId: "usernummereins",
+    //             date: "datum",
+    //             text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    //         },
+    //         {
+    //             id: uuidv4(),
+    //             userId: "usernummerdreis",
+    //             date: "datum",
+    //             text: "tua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    //         }
+    //     ]
+    // },
+    // {
+    //     id: uuidv4(),
+    //     userId: uuidv4(),
+    //     date: "",
+    //     title: "Smartphone ausschalten",
+    //     text: "Hey, ich habe es heute geschafft, mein Smartphone für 3 Stunden ausgeschaltet zu lassen! :-)",
+    //     link: "",
+    //     picture: "??",
+    //     likes: ["4626-457484-24526", "12341-57895-24521-15415"],
+    //     comments: [
+    //         {
+    //             id: uuidv4(),
+    //             userId: "usernummer2",
+    //             date: "datum",
+    //             text: "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
+    //         }
+    //     ]
+    // }
+    // ]
 
-    index = 0;          // wird später an Post(index) beim Aufruf übergeben
     userName = "user__?"
     first_name = "Max"
+
     const commentRef = useRef()
 
-    const [posts, setPosts] = useState(postArray);
+    // const [posts, setPosts] = useState(postArray);
     const [expanded, setExpanded] = useState(false);
     const [treecolored, setTreecolored] = useState(false);
     const [commentInput, setCommentInput] = useState(false);
@@ -112,7 +112,7 @@ const Post = ({ index, userName, userId, first_name }) => {
             date: date,
             text: text,
         }
-        p[index].comments.push(comment)
+        post.comments.push(comment)
         setPosts(p);
         savePostsToLocalStorage(posts)
     }
@@ -170,21 +170,21 @@ const Post = ({ index, userName, userId, first_name }) => {
 
     // beim Klick auf den Baum wird ein Like vergeben oder wieder rausgenommen
     const newLikeClick = () => {
-        if ((treecolored === false) && (posts[index].likes.find(e => e === userId) === undefined)) {
-            setPosts(...[posts], posts[index].likes.push(userId));
+        if ((treecolored === false) && (post.likes.find(e => e === userId) === undefined)) {
+            setPosts(...[posts], post.likes.push(userId));
         } else if (treecolored === true) {
             const p = [...posts]
-            const userIdIndex = posts[index].likes.findIndex(e => e === userId)
-            p[index].likes.splice(userIdIndex, 1)
+            const userIdIndex = post.likes.findIndex(e => e === userId)
+            const postindex = posts.findIndex(e => e.id === post.id)
+            p[postindex].likes.splice(userIdIndex, 1)
             setPosts(p)
         }
         setTreecolored(!treecolored)
     }
 
-
     // ............... RETURN .......................................
     return (
-        <Card sx={{ maxWidth: 380, margin: 5, fontSize: 16 }}>
+        <Card sx={{ maxWidth: 460, minWidth: 250, margin: 2, fontSize: 16 }}>
             <CardHeader
                 avatar={
                     <Avatar
@@ -194,32 +194,31 @@ const Post = ({ index, userName, userId, first_name }) => {
                     </Avatar>
                 }
                 title={userName}
-                subheader={posts[index].date}
+                subheader={post.date}
             />
             <CardHeader titleTypographyProps={{
                 variant: 'subtitle1',
                 fontWeight: 'bold'
             }}
-                title={posts[index].title}   // posts.title
+                title={post.title}   // posts.title
             />
             <CardMedia
                 component="img"
                 height="194"
-                image={require('../images/postcards/laundry-3390806.jpg')}
-                alt={posts[index].alttext}
+                // image={require('../images/postcards/laundry-3390806.jpg')}
             />
             <CardContent>
                 <Typography
                     variant="body2"
                     color="text.secondary">
-                    {posts[index].text}
+                    {post.text}
                 </Typography>
             </CardContent>
             <CardContent sx={{ margin: 0, padding: 0, fontWeight: 'bold' }}>
                 <LikeMarker />
                 <Box
                     sx={{ display: 'inline', marginLeft: 0.5 }}>
-                    {posts[index].likes.length}
+                    {post.likes.length}
                 </Box>
             </CardContent>
             <CardActions disableSpacing>
@@ -268,7 +267,7 @@ const Post = ({ index, userName, userId, first_name }) => {
                     : null
             }
             {
-                posts[index].comments.map(e => (
+                post.comments.map(e => (
                     <Collapse key={e.id} in={expanded} timeout="auto" unmountOnExit
                         style={{ fontSize: '0.75rem' }} >
                         <CardHeader
