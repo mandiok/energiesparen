@@ -1,3 +1,4 @@
+import DateToday from './DateToday';
 import LikeMarker from './LikeMarker';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -25,8 +26,8 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import { grey } from '@mui/material/colors';
 
-const { DateTime } = require("luxon");
 
 // npm install @mui/material
 // npm install @emotion/react
@@ -35,25 +36,28 @@ const { DateTime } = require("luxon");
 
 const LOCAL_STORAGE_KEY = "local_storage_post";
 
-const Post = ({ index, userName, first_name }) => {
+const Post = ({ index, userName, userId, first_name }) => {
 
+    userId = "4626-457484-24526";
 
     const postArray = [{
         id: uuidv4(),
-        userId: uuidv4(),
+        userId: "asdfasdgfa",
         date: "05. November 2022",
         title: "Wäschetrocknen in der Sonne",
         text: "Heute war wieder ein perfekter Tag, um die Wäsche draußen zu trocknen.",
         link: "",
         picture: "??",
-        alttext: "Bildbeschreibung...",
+        likes: ["4626-457484-99999", "12341-57895-24521-15415"],
         comments: [
             {
+                id: uuidv4(),
                 userId: "usernummereins",
                 date: "datum",
                 text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
             },
             {
+                id: uuidv4(),
                 userId: "usernummerdreis",
                 date: "datum",
                 text: "tua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
@@ -68,7 +72,7 @@ const Post = ({ index, userName, first_name }) => {
         text: "Hey, ich habe es heute geschafft, mein Smartphone für 3 Stunden ausgeschaltet zu lassen! :-)",
         link: "",
         picture: "??",
-        alttext: "Bildbeschreibung...",
+        likes: ["4626-457484-24526", "12341-57895-24521-15415"],
         comments: [
             {
                 id: uuidv4(),
@@ -84,7 +88,6 @@ const Post = ({ index, userName, first_name }) => {
     userName = "user__?"
     first_name = "Max"
     const commentRef = useRef()
-    const likeCount = useRef(0)
 
     const [posts, setPosts] = useState(postArray);
     const [expanded, setExpanded] = useState(false);
@@ -97,15 +100,15 @@ const Post = ({ index, userName, first_name }) => {
     const savePostsToLocalStorage = posts => {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(posts));
     }
-    const datefull = DateTime.now();
-    const date = datefull.setLocale('de').toLocaleString(DateTime.DATE_FULL);
+
+    const date = DateToday();
 
     // fügt einen neuen, eingegebenen Kommentar zum aktuellen Post hinzu
     const addComment = text => {
         const p = [...posts];
         const comment = {
             id: uuidv4(),
-            userId: userName,
+            userId: userId,
             date: date,
             text: text,
         }
@@ -137,8 +140,11 @@ const Post = ({ index, userName, first_name }) => {
     }));
 
     const ParkIconC = styled(ParkIcon)(({ theme }) => ({
-        color: treecolored ? 'green' : 'grey',
         marginRight: 0,
+        color: treecolored ? 'green' : 'grey',
+        "&:hover": {
+            bgcolor: grey
+        }
     }));
 
 
@@ -164,13 +170,17 @@ const Post = ({ index, userName, first_name }) => {
 
     // beim Klick auf den Baum wird ein Like vergeben oder wieder rausgenommen
     const newLikeClick = () => {
-        if (treecolored === true) {
-            likeCount.current = likeCount.current - 1;
-        } else {
-            likeCount.current = likeCount.current + 1;
+        if ((treecolored === false) && (posts[index].likes.find(e => e === userId) === undefined)) {
+            setPosts(...[posts], posts[index].likes.push(userId));
+        } else if (treecolored === true) {
+            const p = [...posts]
+            const userIdIndex = posts[index].likes.findIndex(e => e === userId)
+            p[index].likes.splice(userIdIndex, 1)
+            setPosts(p)
         }
         setTreecolored(!treecolored)
     }
+
 
     // ............... RETURN .......................................
     return (
@@ -209,7 +219,7 @@ const Post = ({ index, userName, first_name }) => {
                 <LikeMarker />
                 <Box
                     sx={{ display: 'inline', marginLeft: 0.5 }}>
-                    {likeCount.current}
+                    {posts[index].likes.length}
                 </Box>
             </CardContent>
             <CardActions disableSpacing>
@@ -248,7 +258,7 @@ const Post = ({ index, userName, first_name }) => {
                             fullWidth
                             size="small"
                             label="Dein Kommentar"
-                            rows={5} />
+                            rows={3} />
                         <Button
                             variant="text"
                             onClick={handleSendClick} >
