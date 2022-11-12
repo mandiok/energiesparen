@@ -8,7 +8,8 @@ const cors = require('cors');
 app.use(express.json());
 app.use(cors());
 app.use(async function (req, res, next) {
-    await mongoose.connect('mongodb://127.0.0.1:27017/userdb');
+    //await mongoose.connect('mongodb://127.0.0.1:27017/userdb');
+    await mongoose.connect('mongodb+srv://admin:energiesparen22@cluster0.kzvc9tg.mongodb.net/userdb?retryWrites=true&w=majority');
     next();
   });
 
