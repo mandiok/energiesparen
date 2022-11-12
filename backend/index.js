@@ -3,8 +3,10 @@ const bcrypt = require('bcryptjs');
 const app = express()
 const port = 3001
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 app.use(express.json());
+app.use(cors());
 app.use(async function (req, res, next) {
     await mongoose.connect('mongodb://127.0.0.1:27017/userdb');
     next();
@@ -24,10 +26,12 @@ const userSchema = new mongoose.Schema({
     });
 
 const User = mongoose.model('User', userSchema);
+
 //Status Backend
 app.get('/status', (req, res) => {
     res.status(200).send('Backend running!')
 })
+
 // REGISTER USER
 app.post('/register', async (req, res) => {
     try {
@@ -47,10 +51,6 @@ app.post('/register', async (req, res) => {
         res.status(400).send({ message: 'Error creating user', error });
     }
 });
-
-
-
-
 
 
 // LOGIN USER
