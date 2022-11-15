@@ -4,10 +4,10 @@ const LikeMarker = () => {
     return(
     
         <ParkIcon sx={{
-            color: 'green',
-            bgcolor: '#d6e9be',
-            padding: 0.75,
-            marginLeft: 0.25,
+            color: '#195907',
+            bgcolor: '#aae78e',
+            padding: 0.25,
+            marginLeft: 0.5,
             borderRadius: 5
         }} />
 

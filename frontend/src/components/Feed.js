@@ -25,7 +25,7 @@ const Feed = () => {
         userId: "asdfasdgfa",
         date: "23. Oktober 2022",
         title: "Wäschetrocknen in der Sonne",
-        text: "Heute war wieder ein perfekter Tag, um die Wäsche draußen zu trocknen.",
+        text: "Heute war wieder ein perfekter Tag, um die Wäsche draußen zu trocknen. Wer eine Terrasse, einen Garten oder einen Balkon hat, braucht keinen Trockner!",
         link: "",
         picture: "??",
         likes: ["4626-457484-99999", "12341-57895-24521-15415"],
@@ -49,7 +49,7 @@ const Feed = () => {
         userId: uuidv4(),
         date: "26. Oktober 2022",
         title: "Smartphone ausschalten",
-        text: "Hey, ich habe es heute geschafft, mein Smartphone für 3 Stunden ausgeschaltet zu lassen! :-)",
+        text: "Hey, ich habe es heute geschafft, mein Smartphone für 3 Stunden ausgeschaltet zu lassen! :-) Fühlte sich komisch an, aber ich gabe es geschafft.",
         link: "",
         picture: "??",
         likes: ["4626-457484-24526", "12341-57895-24521-15415", "cdb63720-9628-5ef6-bbca-2e094f3c", "cd20-9628-5ef6-bbca-e6094f3c"],
@@ -67,25 +67,18 @@ const Feed = () => {
         userId: uuidv4(),
         date: "01. November 2022",
         title: " T-Shirt",
-        text: ".....",
+        text: "sequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue ",
         link: "",
         picture: "??",
         likes: ["4626-457484-24526"],
-        comments: [
-            {
-                id: uuidv4(),
-                userId: "usernummer3",
-                date: "datum",
-                text: "Duiait nulla facilisi. Lorem ipsum dolor sit amet,"
-            }
-        ]
+        comments: []
     },
     {
         id: "04",
         userId: uuidv4(),
         date: "06. November 2022",
         title: "Pullover statt T-Shirt",
-        text: ".....",
+        text: "dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue, ril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet ",
         link: "",
         picture: "??",
         likes: ["4626-457484-24526", "2354-2345265-246267"],
@@ -131,16 +124,29 @@ const Feed = () => {
             return postsorted
         }
         else if (sortSelection === "Datum") {
-            return(posts)
+            return (posts)
         }
     }
 
     // -----------------------------------------------------------        
 
     return (
-        <Container sx={{ bgcolor: '#eff5ef', padding: 1 }}>
-            <Box sx={{ padding: 2 }}>
-                <FormControl sx={{ width: 160 }}>
+        <Container
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: 'center',
+                flexDirection: 'column',
+                bgcolor: '#80BF6F',
+                padding: 1,
+            }}>
+            <Box sx={{
+                padding: 1.5,
+                bgcolor: '#fff',
+                margin: 1,
+                borderRadius: 1.0,
+            }}>
+                <FormControl size='small' sx={{ width: 140, mb: 0 }}>
                     <InputLabel id="demo-simple-select-label">Sortiere nach</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
@@ -154,7 +160,11 @@ const Feed = () => {
                     </Select>
                 </FormControl>
             </Box>
-            <Box>
+            <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column'
+            }} >
                 {
                     sort(selection).map(e => (
                         <Post

@@ -4,12 +4,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { TextField } from "@mui/material";
 import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
 import IconButton from "@mui/material/Button";
 import CropOriginalIcon from '@mui/icons-material/CropOriginal';
 import AddLinkIcon from '@mui/icons-material/AddLink';
 import Button from "@mui/material/Button";
 import { useState, useRef } from "react";
+import Box from "@mui/material/Box";
 
 // -----------------------------------------------------------
 
@@ -68,144 +68,177 @@ const InputPost = () => {
     const [inputLink, setInputLink] = useState(false)
     const [errorTitle, setErrorTitle] = useState(false)
     const [errorText, setErrorText] = useState(false)
+    const [inputVisible, setInputVisible] = useState(false)
+    const [sendPost, setSendPost] = useState(false)
 
     const [posts, setPosts] = useState(postArray)
 
 
     const addPost = () => {
         setPosts([...posts,
-            {
-                id: uuidv4(),
-                userId: "userId",
-                date: DateToday(),
-                title: titelRef.current.value,
-                text: postRef.current.value,
-                link: linkRef.current.value,
-                picture: "??",
-                likes: [],
-                comments: []
-            }
+        {
+            id: uuidv4(),
+            userId: "userId",
+            date: DateToday(),
+            title: titelRef.current.value,
+            text: postRef.current.value,
+            link: linkRef.current.value,
+            picture: "??",
+            likes: [],
+            comments: []
+        }
         ])
         titelRef.current.value = "";
         postRef.current.value = "";
         linkRef.current.value = "";
         inputRef.current.value = "";
-}
+        setSendPost(true);
+        setInputVisible(false);
+    }
 
-const handleAddLink = () => {
-    setInputLink(!inputLink);
-}
+    const handleAddLink = () => {
+        setInputLink(!inputLink);
+    }
 
-const handleTitelChange = () => {
-    setErrorTitle(false)
-}
+    const handleTitelChange = () => {
+        setErrorTitle(false)
+    }
 
-const handleTextChange = () => {
-    setErrorText(false)
-}
+    const handleTextChange = () => {
+        setErrorText(false)
+    }
 
-const handleSendClick = () => {
-    if (titelRef.current.value === "")
-        setErrorTitle(true)
-    if (postRef.current.value === "")
-        setErrorText(true)
-    if ((!errorTitle && !errorText) && (titelRef.current.value !== "") && (postRef.current.value !== ""))
-    addPost();
-}
+    const handleSendClick = () => {
+        if (titelRef.current.value === "")
+            setErrorTitle(true)
+        if (postRef.current.value === "")
+            setErrorText(true)
+        if ((!errorTitle && !errorText) && (titelRef.current.value !== "") && (postRef.current.value !== ""))
+            addPost();
+    }
 
+    const handleShowInputClick = () => {
+        setInputVisible(!inputVisible)
+    }
 
+    // saveImage fehlt                  !!!!!!
 
-// saveImage fehlt                  !!!!!!
+    return (
+        <Box sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: 'center',
+            flexDirection: 'column',
+            mt: 2,
+            margin: 1,
+            padding: 2
+        }}>
+            <Button
+                sx={{
+                    color: '#3B8DBF',
+                    bgcolor: '#fff',
+                    fontWeight: 'bold'
+                }}
+                onClick={handleShowInputClick}
+                aria-label="share">
+                Neuer Beitrag
+            </Button>
+            {
+                inputVisible ?
+                    <Card sx={{
+                        mb: 1,
+                        mt: 2,
+                        padding: 2,
+                        fontSize: 16
+                    }} >
+                        {
+                            errorTitle ?
+                                <TextField
+                                    error
+                                    inputRef={titelRef}
+                                    required
+                                    label="Eingabe erforderlich"
+                                    variant="outlined"
+                                    size="small"
+                                    fullWidth
+                                    onChange={handleTitelChange} />
+                                :
+                                <TextField
+                                    inputRef={titelRef}
+                                    required
+                                    label="Titel"
+                                    variant="outlined"
+                                    size="small"
+                                    fullWidth />
+                        }
+                        <IconButton
+                            disableRipple
+                            aria-label="upload picture"
+                            component="label"
+                        >
+                            <input
+                                hidden accept="image/*"
+                                type="file" />
+                            <CropOriginalIcon sx={{ color: '#3c850b' }} />
+                            <input
+                                accept="image/*"
+                                type="text"
+                                ref={inputRef}
+                                hidden
+                            />
+                        </IconButton>
 
-return (
+                        <IconButton disableRipple>
+                            <AddLinkIcon sx={{
+                                color: '#3c850b',
+                                marginRight: 0.5
+                            }}
+                                onClick={handleAddLink} />
+                            <input
+                                type="text"
+                                ref={linkRef}
+                            />
+                        </IconButton>
+                        {
+                            errorText ?
+                                <TextField
+                                    error
+                                    inputRef={postRef}
+                                    required
+                                    label="Eingabe erforderlich"
+                                    variant="outlined"
+                                    multiline
+                                    rows={5}
+                                    fullWidth
+                                    onChange={handleTextChange}
+                                /> :
+                                <TextField
+                                    inputRef={postRef}
+                                    label="Dein Beitrag"
+                                    variant="outlined"
+                                    required
+                                    multiline
+                                    rows={5}
+                                    fullWidth
+                                />
+                        }
+                        <Button
+                            variant="text"
+                            onClick={handleSendClick} >
+                            Senden
+                        </Button>
 
-    <Card sx={{ maxWidth: 380, margin: 5, fontSize: 16 }}>
-        <CardHeader sx={{ bgcolor: '#ee9003', marginBottom: 2, padding: 1.5 }}
-            titleTypographyProps={{
-                fontSize: '1.2em',
-                color: '#ffffff'
-            }}
-            title={"Erstelle Deinen neuen Beitrag"}
-        />
-        {
-            errorTitle ?
-                <TextField
-                    error
-                    inputRef={titelRef}
-                    required
-                    label="Eingabe erforderlich"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    onChange={handleTitelChange} />
-                :
-                <TextField
-                    inputRef={titelRef}
-                    required
-                    label="Titel"
-                    variant="outlined"
-                    size="small"
-                    fullWidth />
-        }
-        <IconButton
-            disableRipple
-            aria-label="upload picture"
-            component="label"
-        >
-            <input
-                hidden accept="image/*"
-                type="file" />
-            <CropOriginalIcon sx={{ color: '#3c850b' }} />
-            <input
-                accept="image/*"
-                type="text"
-                ref={inputRef}
-                hidden
-            />
-        </IconButton>
-
-        <IconButton disableRipple>
-            <AddLinkIcon sx={{ color: '#3c850b', marginRight: 0.5 }}
-                onClick={handleAddLink} />
-            <input
-                type="text"
-                ref={linkRef}
-            />
-        </IconButton>
-        {
-            errorText ?
-                <TextField
-                    error
-                    inputRef={postRef}
-                    required
-                    label="Eingabe erforderlich"
-                    variant="outlined"
-                    multiline
-                    rows={3}
-                    fullWidth
-                    onChange={handleTextChange}
-                /> :
-                <TextField
-                    inputRef={postRef}
-                    label="Dein Beitrag"
-                    variant="outlined"
-                    required
-                    multiline
-                    rows={3}
-                    fullWidth
-                />
-        }
-
-        <Button
-            variant="text"
-            onClick={handleSendClick} >
-            Senden
-        </Button>
-    </Card>
-
-
-
-)
+                    </Card >
+                    : null
+            }
+            {sendPost ?
+                <Box>
+                    <p>Vielen Dank! </p>
+                    <p>Dein Beitrag ist nun online.</p>
+                </Box>
+                : null}
+        </Box >
+    )
 }
 
 export default InputPost;
