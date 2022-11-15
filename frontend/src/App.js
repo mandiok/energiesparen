@@ -1,9 +1,7 @@
 import Header from './components/Header';
 import  Login from './components/Login';
 import Register from './components/Register';
-import Post from './components/Post';
-import InputPost from './components/InputPost';
-import Feed from './components/Feed';
+import Mainpage from './components/Mainpage';
 
 
 function App() {
@@ -11,13 +9,13 @@ function App() {
     <div className="App">
       {/* <Header /> */}
 
-      <Login />
-
-      {/* <Register /> */}
-
       {/* <Login /> */}
-      <InputPost />
-      <Feed />
+
+      {/* <Register />
+
+      <Login /> */}
+      <Mainpage />
+
     </div>
     
   );

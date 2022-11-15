@@ -141,10 +141,7 @@ const Post = ({ posts, setPosts, post, userName, userId, first_name }) => {
 
     const ParkIconC = styled(ParkIcon)(({ theme }) => ({
         marginRight: 0,
-        color: treecolored ? 'green' : 'grey',
-        "&:hover": {
-            bgcolor: grey
-        }
+        color: treecolored ? '#195907' : 'grey',
     }));
 
 
@@ -184,13 +181,16 @@ const Post = ({ posts, setPosts, post, userName, userId, first_name }) => {
 
     // ............... RETURN .......................................
     return (
-        <Card sx={{ maxWidth: 460, minWidth: 250, margin: 2, fontSize: 16 }}>
+        <Card sx={{
+            margin: 1,
+            fontSize: 16
+        }}>
             <CardHeader
                 avatar={
                     <Avatar
-                        sx={{ bgcolor: '#4c7257' }}
+                        sx={{ bgcolor: '#195907' }}
                         aria-label="recipe">
-                        {first_name.substr(1, 1).toUpperCase()}
+                        {first_name.substr(0, 1).toUpperCase()}
                     </Avatar>
                 }
                 title={userName}
@@ -205,7 +205,7 @@ const Post = ({ posts, setPosts, post, userName, userId, first_name }) => {
             <CardMedia
                 component="img"
                 height="194"
-                // image={require('../images/postcards/laundry-3390806.jpg')}
+            // image={require('../images/postcards/laundry-3390806.jpg')}
             />
             <CardContent>
                 <Typography
@@ -214,10 +214,17 @@ const Post = ({ posts, setPosts, post, userName, userId, first_name }) => {
                     {post.text}
                 </Typography>
             </CardContent>
-            <CardContent sx={{ margin: 0, padding: 0, fontWeight: 'bold' }}>
+            <CardContent sx={{
+                margin: 0,
+                padding: 0.25,
+                fontWeight: 'bold'
+            }}>
                 <LikeMarker />
                 <Box
-                    sx={{ display: 'inline', marginLeft: 0.5 }}>
+                    sx={{
+                        display: 'inline',
+                        marginLeft: 0.5
+                    }}>
                     {post.likes.length}
                 </Box>
             </CardContent>
@@ -229,14 +236,27 @@ const Post = ({ posts, setPosts, post, userName, userId, first_name }) => {
                     <ShareIcon />
                 </IconButton>
                 <CommentIcon onClick={newCommentInput} />
-                <p style={{ margin: '0 0 0 auto' }} >Kommentare</p>
-                <ExpandMore
-                    expand={expanded}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more">
-                    <ExpandMoreIcon />
-                </ExpandMore>
+                {
+                    post.comments.length === 1 ?
+                        <p style={{ margin: '0 0 0 auto' }} >{post.comments.length} Kommentar</p>
+                        :
+                        post.comments.length > 1 ?
+                            <p style={{ margin: '0 0 0 auto' }} >{post.comments.length} Kommentare</p>
+                            :
+                            post.comments.length === 0 ?
+                                <p style={{ margin: '0 0 0 auto' }} ></p>
+                                : null}
+                {
+                    post.comments.length > 0 ?
+                        <ExpandMore
+                            expand={expanded}
+                            onClick={handleExpandClick}
+                            aria-expanded={expanded}
+                            aria-label="show more">
+                            <ExpandMoreIcon />
+                        </ExpandMore>
+                        : null
+                }
             </CardActions>
             {
                 shareItem ?
