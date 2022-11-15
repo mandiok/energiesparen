@@ -15,7 +15,7 @@ function App() {
       {/* <Register /> */}
 
       {/* <Login /> */}
-      <InputPost />
+      {/* <InputPost /> */}
       {/* <Post /> */}
     </div>
     

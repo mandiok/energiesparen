@@ -12,19 +12,24 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-//import { useState } from 'react';
+import Alert from '@mui/material/Alert';
+import { useState } from 'react';
 
 
 const theme = createTheme();
 
+
+
  
 export default function SignIn() {
+ 
     const handleSubmit = (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
       const email = data.get('email');
       const password = data.get('password');
-        userLogin(email, password);
+      userLogin(email, password);
+      
     };
     const userLogin = async (email, password) => {
       const response = await fetch('http://localhost:3001/login', {
@@ -36,6 +41,11 @@ export default function SignIn() {
       });
       const data = await response.json();
       console.log(data);
+     if (data.status === "ok") {
+        alert("Login successful");
+      } else {
+        alert("Login failed");
+      }
     };
 
     
@@ -106,6 +116,8 @@ export default function SignIn() {
           </Box>
         </Box>
       </Container>
+      
+
     </ThemeProvider>
   );
 }

@@ -16,7 +16,8 @@
   },
   "scripts": {
     "start": "cd backend && npm start",
-    "dev": "concurrently \"cd backend && npm run dev \"\"cd frontend && npm start \""
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\""
+
   },
   "eslintConfig": {
     "extends": [
