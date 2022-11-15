@@ -26,7 +26,29 @@ const userSchema = new mongoose.Schema({
     message: String
     });
 
+const commentSchema = new mongoose.Schema({
+    id: String,
+    userId: String,
+    date: String,
+    text: String 
+    });
+const postSchema = new mongoose.Schema({
+        id: String,
+        userId: String,
+        date: String,
+        title: String,
+        text: String,
+        link: String,
+        //picture: String,
+        likes: [String],
+        comments: 
+            [commentSchema],
+
+    });
+
 const User = mongoose.model('User', userSchema);
+const Post = mongoose.model('Post', postSchema);
+
 
 //Status Backend
 app.get('/status', (req, res) => {
@@ -68,6 +90,36 @@ if (validPassword) {
     return;
 }
 res.status(400).send({ status: 'error', error: 'Invalid email or password' });
+});
+
+// Post a post
+app.post('/post', async (req, res) => {
+    try {
+        const result = await Post.create({
+            id: req.body.id,
+            userId: req.body.userId,
+            date: req.body.date,
+            title: req.body.title,
+            text: req.body.text,
+            link: req.body.link,
+            //picture: req.body.picture,
+            likes: req.body.likes,
+            comments: req.body.comments,
+        });
+        res.status(200).send({ message: 'Post created', result });
+    } catch (error) {
+        res.status(400).send({ message: 'Error creating post', error });
+    }
+});
+
+// Get all posts
+app.get('/posts', async (req, res) => {
+    try {
+        const result = await Post.find();
+        res.status(200).send({ message: 'Posts found', result });
+    } catch (error) {
+        res.status(400).send({ message: 'Error finding posts', error });
+    }
 });
 
 

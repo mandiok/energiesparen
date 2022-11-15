@@ -16,8 +16,12 @@ function App() {
       {/* <Register /> */}
 
       {/* <Login /> */}
+
+      {/* <InputPost /> */}
+      {/* <Post /> */}
       <InputPost />
       <Feed />
+
     </div>
     
   );
