@@ -69,7 +69,7 @@ const InputPost = () => {
     const [errorTitle, setErrorTitle] = useState(false)
     const [errorText, setErrorText] = useState(false)
 
-    const [posts, setPosts] = useState(postArray);
+    const [posts, setPosts] = useState(postArray)
 
 
     const addPost = () => {
@@ -112,6 +112,8 @@ const handleSendClick = () => {
     if ((!errorTitle && !errorText) && (titelRef.current.value !== "") && (postRef.current.value !== ""))
     addPost();
 }
+
+
 
 // saveImage fehlt                  !!!!!!
 
