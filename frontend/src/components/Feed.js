@@ -7,6 +7,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 
 //---------------------------------------------------------------------
 
@@ -90,10 +92,54 @@ const Feed = () => {
                 text: "Duiait nulla facilisi. Lorem ipsum dolor sit amet,"
             }
         ]
+    },
+    {
+        id: "05",
+        userId: uuidv4(),
+        date: "09. November 2022",
+        title: "19 Grad Celcius",
+        text: "dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue, ril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit pra",
+        link: "",
+        picture: "??",
+        likes: ["4626-457484-24526", "2354-2345265-246267", "cd20-9628-5ef6-bbca-e6094f3c"],
+        comments: []
+    },
+    {
+        id: "06",
+        userId: uuidv4(),
+        date: "10. November 2022",
+        title: "Dummy Text",
+        text: " odio dignissim qui blandit praesent luptatum zzril delenit augue, ril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit pra",
+        link: "",
+        picture: "??",
+        likes: ["2354-2345265-246267", "cd20-9628-5ef6-bbca-e6094f3c"],
+        comments: []
+    },
+    {
+        id: "07",
+        userId: uuidv4(),
+        date: "12. November 2022",
+        title: "Smartphones",
+        text: "Ich habe einen interessanten Artikel gelesen, wie viel Strom wir täglich mit unseren Smartphones verbrauchen. Wirklich guter Artikel, den ich Euch hier weiter empfehle..... ",
+        link: "",
+        picture: "??",
+        likes: ["4626-457484-24526", "12341-57895-24521-15415", "cd20-9628-5ef6-bbca-e6094f3c"],
+        comments: [
+            {
+                id: uuidv4(),
+                userId: "usernummer24",
+                date: "datum",
+                text: "Duisolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
+            }
+        ]
     }
     ]
 
+    const steps = 2
+
     const [posts, setPosts] = useState(postArray);
+    const [indexStart, setIndexStart] = useState(1);
+    const [indexEnd, setIndexEnd] = useState(indexStart + steps);
 
     //----------
     const sort = (sortSelection) => {
@@ -126,6 +172,15 @@ const Feed = () => {
         else if (sortSelection === "Datum") {
             return (posts)
         }
+    }
+
+    const handleSlideLClick = () => {
+        setIndexStart(indexStart - steps)
+        setIndexEnd(indexEnd - steps)
+    }
+    const handleSlideRClick = () => {
+        setIndexStart(indexStart + steps)
+        setIndexEnd(indexEnd + steps)
     }
 
     // -----------------------------------------------------------        
@@ -166,7 +221,9 @@ const Feed = () => {
                 flexDirection: 'column'
             }} >
                 {
-                    sort(selection).map(e => (
+                    // sort(selection).map(e => (
+                    sort(selection).slice(indexStart, indexEnd).map(e => (
+
                         <Post
                             key={e.id}
                             posts={posts}
@@ -178,6 +235,18 @@ const Feed = () => {
                         />
                     ))
                 }
+                <div>
+                    {
+                        indexStart > 1 ?
+                            <ArrowLeftIcon fontSize="large" onClick={handleSlideLClick} />
+                            : null
+                    }
+                    {
+                        indexEnd < posts.length ?
+                            <ArrowRightIcon fontSize="large" onClick={handleSlideRClick} />
+                            : null
+                    }
+                </div>
             </Box>
         </Container>
     )
