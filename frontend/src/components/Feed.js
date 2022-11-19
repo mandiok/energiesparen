@@ -141,8 +141,6 @@ const Feed = () => {
     const [indexStart, setIndexStart] = useState(1);
     const [indexEnd, setIndexEnd] = useState(indexStart + steps);
 
-
-    console.log(posts.length + 1, posts.length)
     //----------
     const sort = (sortSelection) => {
 
@@ -179,15 +177,11 @@ const Feed = () => {
     const handleSlideLClick = () => {
         setIndexStart(indexStart - steps)
         setIndexEnd(indexEnd - steps)
-
     }
     const handleSlideRClick = () => {
         setIndexStart(indexStart + steps)
         setIndexEnd(indexEnd + steps)
-
     }
-    console.log(indexStart)
-    console.log(indexEnd)
 
     // -----------------------------------------------------------        
 

@@ -115,7 +115,7 @@ const ProfilCard = () => {
                 {yourLikes}
                 <ParkIcon sx={{ marginLeft: 0.5, color: '#195907' }} />
             </Box>
-            <Box sx={{ mb: 1 }} >
+            <Box sx={{ mb: 2 }} >
                 erhalten
             </Box>
         </Card>

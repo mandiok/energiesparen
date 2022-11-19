@@ -8,11 +8,15 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
+import { useNavigate } from "react-router-dom"; 
+import { redirect } from "react-router-dom";
 
 
 export default function MenuAppBar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  // const navigate = useNavigate();
 
   const handleChange = (event) => {
     setAuth(event.target.checked);
@@ -25,6 +29,10 @@ export default function MenuAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleProfileClick = () => {
+    // navigate("/profile");
+    // redirect("/profile");
+  }
 
   const handleLogOut = () => {
     // setAuth(false)
@@ -33,7 +41,7 @@ export default function MenuAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
 
-      <AppBar position="static" sx={{ bgcolor: '#3B8DBF' }} >
+      <AppBar position="static" sx={{ bgcolor: '#3B8DBF', mb: 2 }} >
         <Toolbar>
           <IconButton
             size="large"
@@ -74,7 +82,7 @@ export default function MenuAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
                 <MenuItem onClick={handleLogOut}>Log out</MenuItem>
 

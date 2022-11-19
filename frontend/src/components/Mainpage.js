@@ -28,7 +28,7 @@ const Mainpage = () => {
                     <InputPost />
                     <Feed />
                 </Box>
-                <Box sx={{ bgcolor: '#f8f5f5', width: '25%' }} >
+                <Box sx={{ bgcolor: '#f8f5f5', width: '25%', paddingLeft: 1 }} >
                     <p>weitere Funktionen
                     </p>
                 </Box>
