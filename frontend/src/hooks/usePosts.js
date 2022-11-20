@@ -3,48 +3,12 @@ import { useState, useEffect } from "react";
     const usePosts = () => {
     const [posts, setPosts] = useState();
 
-    //Handler aus Frontend???
-    /*const [selection, setSelection] = useState("Datum");
-
-    const handleChange = (event) => {
-        setSelection(event.target.value);
-    };
-
-    const sort = (sortSelection) => {
-        if (sortSelection === "Likes") {
-            let array = [];
-            for (let i = 0; i < posts.length; i++) {
-                array.push([posts[i].likes.length, posts[i].id]);
-            }
-
-            array.sort(function (a, b) {
-                return a[0] - b[0]
-            })
-
-            array.reverse();
-
-            let postsorted = [];
-            for (let k = 0; k < posts.length; k++) {
-                for (let n = 0; n < array.length; n++) {
-                    {
-                        if (array[k][1] === posts[n].id) {
-                            postsorted.push(posts[n]);
-                        }
-                    }
-                }
-            }
-            return postsorted
-        }
-        else if (sortSelection === "Datum") {
-            return(posts)
-        }
-    }
-
     
-} */
+    
+
 
 //Post hinzufügen
-const addPost = () => {
+const addPost = ({newPost}) => {
     const post=
         {
             id: uuidv4(),
@@ -53,7 +17,7 @@ const addPost = () => {
             title: titelRef.current.value,
             text: postRef.current.value,
             link: linkRef.current.value,
-            picture: "??",
+            //picture: "??",
             likes: [],
             comments: []
         }
@@ -101,8 +65,45 @@ useEffect(() => {
     getPostsFromBackend();
 }, []);
 
-return { posts, addPost };
+return [posts, addPost];
 };
 
 export default usePosts;
 
+
+
+//BACKUP:
+//Handler aus Frontend???
+    /*const [selection, setSelection] = useState("Datum");
+
+  
+
+    const sort = (sortSelection) => {
+        if (sortSelection === "Likes") {
+            let array = [];
+            for (let i = 0; i < posts.length; i++) {
+                array.push([posts[i].likes.length, posts[i].id]);
+            }
+
+            array.sort(function (a, b) {
+                return a[0] - b[0]
+            })
+
+            array.reverse();
+
+            let postsorted = [];
+            for (let k = 0; k < posts.length; k++) {
+                for (let n = 0; n < array.length; n++) {
+                    {
+                        if (array[k][1] === posts[n].id) {
+                            postsorted.push(posts[n]);
+                        }
+                    }
+                }
+            }
+            return postsorted
+        }
+        else if (sortSelection === "Datum") {
+            return(posts)
+        }
+    }
