@@ -46,7 +46,6 @@ const Post = ({ post }) => {
 
     const {posts, setPosts} = useContext(postContext)
 
-    console.log("posts in Post:", posts)
     const commentRef = useRef()
 
     const [expanded, setExpanded] = useState(false);
@@ -54,11 +53,6 @@ const Post = ({ post }) => {
     const [commentInput, setCommentInput] = useState(false);
     const [shareItem, setShareItem] = useState(false);
 
-
-    // // Speichere Posts im local_storage
-    // const savePostsToLocalStorage = posts => {
-    //     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(posts));
-    // }
 
     const date = DateToday();
 

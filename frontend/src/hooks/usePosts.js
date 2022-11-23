@@ -1,31 +1,19 @@
 import { useState, useEffect } from "react";
 
     const usePosts = () => {
-        const [posts, setPosts] = useState(
-            [{
-                id: "",
-                userId: "",
-                date: "",
-                title: "",
-                text: "",
-                link: "",
-                picture: "",
-                likes: [],
-                comments: []
-            }]
-        );
 
-    
+        const [posts, setPosts] = useState(""); //Anscheinend muss zumindest ein leerer String gesetzt werden, damit die Daten aus dem Backend geholt werden können. Einfach nur "useState()" funktioniert nicht. Ob es an der verschachtelten Struktur des Post-Objekts liegt?
+        
 //Post hinzufügen
 const addPost = (newPost) => {
 
-    setPosts([...posts, newPost]);
-    addPostsToBackend(posts);
+    setPosts([...posts, newPost])
+    addPostsToBackend(newPost);
 }
 
 //Backend Routen
-const addPostsToBackend = (posts) => {
-    fetch("http://localhost:3001/posts", {
+const addPostsToBackend = async (posts) => {
+    await fetch("/post", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -42,12 +30,12 @@ const addPostsToBackend = (posts) => {
 };
 
 
-const getPostsFromBackend = () => {
-    fetch("http://localhost:3001/posts")
+const getPostsFromBackend = async () => {
+    await fetch("/posts")
         .then((response) => response.json())
         .then((data) => {
             console.log("Success:", data);   
-            setPosts(data.result)             
+            setPosts(data.result)       
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -57,7 +45,7 @@ const getPostsFromBackend = () => {
 
 //Posts laden
 useEffect(() => {
-    getPostsFromBackend();
+    getPostsFromBackend()
 }, []);
 
 return [posts, setPosts, addPost];

@@ -20,7 +20,6 @@ const Feed = () => {
 
     const {posts} = useContext(postContext)
 
-    console.log("posts:", posts)
     const handleChange = (event) => {
         setSelection(event.target.value);
     }
@@ -139,6 +138,7 @@ const Feed = () => {
     // ]
 
     const steps = 2
+    
 
     // const [posts, setPosts] = useState(postArray);
     const [indexStart, setIndexStart] = useState(0);
@@ -224,7 +224,7 @@ const Feed = () => {
                 flexDirection: 'column'
             }} >
                 {
-                    // sort(selection).map(e => (
+                    posts &&
                     sort(selection).slice(indexStart, indexEnd).map(e => (
 
                         <Post
