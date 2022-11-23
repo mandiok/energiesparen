@@ -1,4 +1,5 @@
 import DateToday from "./DateToday";
+import { postContext } from "../App";
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,6 +11,7 @@ import AddLinkIcon from '@mui/icons-material/AddLink';
 import Button from "@mui/material/Button";
 import { useState, useRef } from "react";
 import Box from "@mui/material/Box";
+import { useContext } from "react";
 
 // -----------------------------------------------------------
 
@@ -60,6 +62,8 @@ const postArray = [{
 
 const InputPost = () => {
 
+    const {addPost} = useContext(postContext);
+
     const titelRef = useRef()
     const postRef = useRef()
     const inputRef = useRef()
@@ -71,12 +75,10 @@ const InputPost = () => {
     const [inputVisible, setInputVisible] = useState(false)
     const [sendPost, setSendPost] = useState(false)
 
-    const [posts, setPosts] = useState(postArray)
 
 
-    const addPost = () => {
-        setPosts([...posts,
-        {
+    const createPost = () => {
+        const newPost = {
             id: uuidv4(),
             userId: "userId",
             date: DateToday(),
@@ -87,13 +89,15 @@ const InputPost = () => {
             likes: [],
             comments: []
         }
-        ])
+        
         titelRef.current.value = "";
         postRef.current.value = "";
         linkRef.current.value = "";
         inputRef.current.value = "";
         setSendPost(true);
         setInputVisible(false);
+
+        addPost(newPost)
     }
 
     const handleAddLink = () => {
@@ -114,7 +118,7 @@ const InputPost = () => {
         if (postRef.current.value === "")
             setErrorText(true)
         if ((!errorTitle && !errorText) && (titelRef.current.value !== "") && (postRef.current.value !== ""))
-            addPost();
+            createPost();
     }
 
     const handleShowInputClick = () => {

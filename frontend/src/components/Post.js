@@ -1,11 +1,13 @@
 import DateToday from './DateToday';
 import LikeMarker from './LikeMarker';
+import { postContext } from '../App';
 
 import { v4 as uuidv4 } from 'uuid';
 
 import { useRef, useState } from 'react'
 import * as React from 'react';
 
+import { useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -34,72 +36,23 @@ import { grey } from '@mui/material/colors';
 // npm install @emotion/styled
 // npm install @mui/icons-material
 
-const LOCAL_STORAGE_KEY = "local_storage_post";
+// const LOCAL_STORAGE_KEY = "local_storage_post";
 
-const Post = ({ posts, setPosts, post, userName, userId, first_name }) => {
+const Post = ({ post }) => {
 
-    userId = "4626-999999-24526";
+    const userId = uuidv4()     //temporär
+    const first_name = 'Max'   //temporär
+    const userName = 'mini'     //temporär
 
-    // const postArray = [{
-    //     id: uuidv4(),
-    //     userId: "asdfasdgfa",
-    //     date: "05. November 2022",
-    //     title: "Wäschetrocknen in der Sonne",
-    //     text: "Heute war wieder ein perfekter Tag, um die Wäsche draußen zu trocknen.",
-    //     link: "",
-    //     picture: "??",
-    //     likes: ["4626-457484-99999", "12341-57895-24521-15415"],
-    //     comments: [
-    //         {
-    //             id: uuidv4(),
-    //             userId: "usernummereins",
-    //             date: "datum",
-    //             text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-    //         },
-    //         {
-    //             id: uuidv4(),
-    //             userId: "usernummerdreis",
-    //             date: "datum",
-    //             text: "tua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-    //         }
-    //     ]
-    // },
-    // {
-    //     id: uuidv4(),
-    //     userId: uuidv4(),
-    //     date: "",
-    //     title: "Smartphone ausschalten",
-    //     text: "Hey, ich habe es heute geschafft, mein Smartphone für 3 Stunden ausgeschaltet zu lassen! :-)",
-    //     link: "",
-    //     picture: "??",
-    //     likes: ["4626-457484-24526", "12341-57895-24521-15415"],
-    //     comments: [
-    //         {
-    //             id: uuidv4(),
-    //             userId: "usernummer2",
-    //             date: "datum",
-    //             text: "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
-    //         }
-    //     ]
-    // }
-    // ]
-
-    userName = "user__?"
-    first_name = "Max"
+    const {posts, setPosts} = useContext(postContext)
 
     const commentRef = useRef()
 
-    // const [posts, setPosts] = useState(postArray);
     const [expanded, setExpanded] = useState(false);
     const [treecolored, setTreecolored] = useState(false);
     const [commentInput, setCommentInput] = useState(false);
     const [shareItem, setShareItem] = useState(false);
 
-
-    // Speichere Posts im local_storage
-    const savePostsToLocalStorage = posts => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(posts));
-    }
 
     const date = DateToday();
 
@@ -114,7 +67,7 @@ const Post = ({ posts, setPosts, post, userName, userId, first_name }) => {
         }
         post.comments.push(comment)
         setPosts(p);
-        savePostsToLocalStorage(posts)
+        // savePostsToLocalStorage(posts)
     }
 
     // checkt, ob Kommentar eingegeben wurde und ruft die func() addComment auf
@@ -168,6 +121,7 @@ const Post = ({ posts, setPosts, post, userName, userId, first_name }) => {
     // beim Klick auf den Baum wird ein Like vergeben oder wieder rausgenommen
     const newLikeClick = () => {
         if ((treecolored === false) && (post.likes.find(e => e === userId) === undefined)) {
+            console.log(post)
             setPosts(...[posts], post.likes.push(userId));
         } else if (treecolored === true) {
             const p = [...posts]

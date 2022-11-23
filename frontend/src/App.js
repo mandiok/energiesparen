@@ -1,27 +1,38 @@
 import Header from './components/Header';
-import  Login from './components/Login';
+import Login from './components/Login';
 import Register from './components/Register';
 import Mainpage from './components/Mainpage';
-import Profile from './components/Profile'
+import Profile from './components/Profile';
+import usePosts from './hooks/usePosts';
+
+import { createContext } from 'react';
+
+
+export const postContext = createContext()
 
 
 function App() {
+
+  const [posts, setPosts, addPost] = usePosts()
+
   return (
     <div className="App">
-      {/* <Header /> */}
+      <postContext.Provider value={{ posts, setPosts, addPost }}>
+        {/* <Header /> */}
 
-      {/* <Login /> */}
+        {/* <Login /> */}
 
-      {/* <Register />
+        {/* <Register />
 
       <Login /> */}
-      <Mainpage />
-      {/* <Profile /> */}
+        <Mainpage />
+        {/* <Profile /> */}
 
-      {/* <Login /> */}
+        {/* <Login /> */}
 
+      </postContext.Provider>
     </div>
-    
+
   );
 }
 
