@@ -29,7 +29,6 @@ const addPostsToBackend = async (posts) => {
         });
 };
 
-
 const getPostsFromBackend = async () => {
     await fetch("/posts")
         .then((response) => response.json())
@@ -49,6 +48,7 @@ useEffect(() => {
 }, []);
 
 return [posts, setPosts, addPost];
+
 };
 
 export default usePosts;
@@ -57,6 +57,7 @@ export default usePosts;
 
 //BACKUP:
 //Handler aus Frontend???
+
     //const [selection, setSelection] = useState("Datum");
 
   
@@ -90,3 +91,4 @@ export default usePosts;
     //         return(posts)
     //     }
     // }
+
