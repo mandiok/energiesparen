@@ -42,12 +42,44 @@ const getPostsFromBackend = async () => {
 };
 
 
+
+const addLikeToBackend = async (postId, userId) => {
+
+var raw = JSON.stringify({
+  "id": postId,
+  "userId": userId
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: {
+    "Content-Type": "application/json",
+},
+  body: raw,
+  redirect: 'follow'
+};
+await fetch("/addlike", requestOptions)
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+}
+
+
+const addLike = (post, userId) => {
+    // console.log("post:", post)
+    // console.log("userId:", userId)
+    setPosts(...[posts], post.likes.push(userId));
+    // console.log(post.likes)
+    addLikeToBackend(post.id, userId);
+}
+
+
+
 //Posts laden
 useEffect(() => {
     getPostsFromBackend()
 }, []);
 
-return [posts, setPosts, addPost];
+return [posts, setPosts, addPost, addLike];
 
 };
 

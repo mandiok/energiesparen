@@ -44,7 +44,7 @@ const Post = ({ post }) => {
     const first_name = 'Max'   //temporär
     const userName = 'mini'     //temporär
 
-    const {posts, setPosts} = useContext(postContext)
+    const {posts, setPosts, addLike} = useContext(postContext)
 
     const commentRef = useRef()
 
@@ -122,7 +122,8 @@ const Post = ({ post }) => {
     const newLikeClick = () => {
         if ((treecolored === false) && (post.likes.find(e => e === userId) === undefined)) {
             console.log(post)
-            setPosts(...[posts], post.likes.push(userId));
+            // setPosts(...[posts], post.likes.push(userId));
+            addLike(post, userId)
         } else if (treecolored === true) {
             const p = [...posts]
             const userIdIndex = post.likes.findIndex(e => e === userId)
