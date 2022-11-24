@@ -13,11 +13,11 @@ export const postContext = createContext()
 
 function App() {
 
-  const [posts, setPosts, addPost] = usePosts()
+  const [posts, setPosts, addPost, addLike] = usePosts()
 
   return (
     <div className="App">
-      <postContext.Provider value={{ posts, setPosts, addPost }}>
+      <postContext.Provider value={{ posts, setPosts, addPost, addLike }}>
         {/* <Header /> */}
 
         {/* <Login /> */}
