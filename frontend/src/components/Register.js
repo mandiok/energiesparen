@@ -14,15 +14,18 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect } from 'react';
-import axios from"axios";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 
 const theme = createTheme();
 
 
- export default function SignUp() {
+export default function SignUp() {
 
-    const [inputField, setInputField] = useState(undefined); //sbstnkll modified
+  const navigate = useNavigate();
+
+  const [inputField, setInputField] = useState(undefined); //sbstnkll modified
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -31,8 +34,8 @@ const theme = createTheme();
     // das man ein formdata object nicht eifnach in die console loggen kann
     // folgender stackoverflow thread als hinweis:
     // https://stackoverflow.com/questions/71903417/form-data-doesnt-fill-in-react
-    const formData = new FormData(event.currentTarget); 
-    [...formData.entries()].forEach(e => console.log(e)) 
+    const formData = new FormData(event.currentTarget);
+    [...formData.entries()].forEach(e => console.log(e))
 
     const data = new FormData(event.target);
 
@@ -46,30 +49,36 @@ const theme = createTheme();
       password: data.get('password'),
       url: data.get('url'),
       message: data.get('message')
-      
+
     }));
-  }; 
-  
+  };
 
 
-    const saveUserToBackend = async(userData) => {
-      
-      var config = {
-        method: 'post',
-        url: 'http://localhost:3001/register',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        data: JSON.stringify(userData)
-      };
-      const response = await axios(config);
-      return response;
-    }
 
- 
+  const saveUserToBackend = async (userData) => {
+
+    var config = {
+      method: 'post',
+      url: 'http://localhost:3001/register',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify(userData)
+    };
+    const response = await axios(config);
+    return response;
+  }
+
+
   useEffect(() => {
     if (inputField) saveUserToBackend(inputField);
   }, [inputField])
+
+
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -167,18 +176,18 @@ const theme = createTheme();
               </Grid>
 
             </Grid>
-            
-             <Button
+
+            <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-            > 
+            >
               Registrieren
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="#" variant="body2" onClick={handleLoginClick} >
                   Hast du schon einen Account? Hier einloggen
                 </Link>
               </Grid>

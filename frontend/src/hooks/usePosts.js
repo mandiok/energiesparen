@@ -42,36 +42,59 @@ const getPostsFromBackend = async () => {
 };
 
 
-
+// Add Like to Backend
 const addLikeToBackend = async (postId, userId) => {
 
-var raw = JSON.stringify({
-  "id": postId,
-  "userId": userId
-});
-
-var requestOptions = {
-  method: 'POST',
-  headers: {
-    "Content-Type": "application/json",
-},
-  body: raw,
-  redirect: 'follow'
-};
-await fetch("/addlike", requestOptions)
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
+  var raw = JSON.stringify({
+    "id": postId,
+    "userId": userId
+  });
+  
+  var requestOptions = {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+  },
+    body: raw,
+    redirect: 'follow'
+  };
+  await fetch("/addlike", requestOptions)
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
 }
 
-
+// add Like
 const addLike = (post, userId) => {
-    // console.log("post:", post)
-    // console.log("userId:", userId)
     setPosts(...[posts], post.likes.push(userId));
-    // console.log(post.likes)
     addLikeToBackend(post.id, userId);
 }
 
+//remove Like from Backend
+const removeLikeFromBackend = async (postId, userId) => {
+    var raw = JSON.stringify({
+        "id": postId,
+        "userId": userId
+      });
+      var requestOptions = {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+      },
+        body: raw,
+        redirect: 'follow'
+      };
+      await fetch("/removelike", requestOptions)
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+}
+
+// remove Like
+const removeLike = (post, userId) => {
+    const userIdIndex = post.likes.findIndex(e => e === userId)
+    const postindex = posts.findIndex(e => e.id === post.id)
+    setPosts([...posts, posts[postindex].likes.splice(userIdIndex,1)]);
+    removeLikeFromBackend(post.id, userId);
+}
 
 
 //Posts laden
@@ -79,7 +102,7 @@ useEffect(() => {
     getPostsFromBackend()
 }, []);
 
-return [posts, setPosts, addPost, addLike];
+return [posts, setPosts, addPost, addLike, removeLike];
 
 };
 

@@ -130,14 +130,21 @@ app.get('/posts', async (req, res) => {
 // Add a like
 app.post('/addlike', async (req, res) => {
     try {
+        let response = await Post.findOneAndUpdate({ id: req.body.id }, { $push: { likes: req.body.userId } }, { done: true })
+        res.status(200).send({ message: 'Like added' })
+    }
+    catch (error) {
+        res.status(400).send({ message: 'Error updating the likes', error })
+    }
+})
+
+// Remove a like
+app.post('/removelike', async (req, res) => {
+    try {
         console.log(req.body.id)
         console.log(req.body.userId)
-        // let response = await Post.findOne( { id: req.body.id}  )
-        let response = await Post.findOneAndUpdate({ id: req.body.id }, { $push: { likes: req.body.userId } }, { done: true })
-        console.log("response nach findOne:", response, "\n")
-
-        res.status(200).send({ message: 'Like added' })
-
+        let response = await Post.findOneAndUpdate({ id: req.body.id }, { $pull: { likes: req.body.userId } }, { done: true })
+        res.status(200).send({ message: 'Like removed' })
     }
     catch (error) {
         res.status(400).send({ message: 'Error updating the likes', error })
