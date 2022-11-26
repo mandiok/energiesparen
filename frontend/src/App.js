@@ -15,11 +15,11 @@ export const postContext = createContext()
 
 function App() {
 
-  const [posts, setPosts, addPost, addLike, removeLike] = usePosts()
+  const [posts, setPosts, addPost, addLike, removeLike, addComment] = usePosts()
 
   return (
     <div className="App">
-      <postContext.Provider value={{ posts, setPosts, addPost, addLike, removeLike }}>
+      <postContext.Provider value={{ posts, setPosts, addPost, addLike, removeLike, addComment }}>
         <BrowserRouter>
         <Routes>
           <Route path='/' element={ <Mainpage />}/>

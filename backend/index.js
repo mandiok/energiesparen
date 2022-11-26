@@ -143,7 +143,7 @@ app.post('/removelike', async (req, res) => {
     try {
         console.log(req.body.id)
         console.log(req.body.userId)
-        let response = await Post.findOneAndUpdate({ id: req.body.id }, { $pull: { likes: req.body.userId } }, { done: true })
+        let response = await Post.findOneAndUpdate({ id: req.body.id }, { $pull: { likes: req.body.userId } }, { new: true })
         res.status(200).send({ message: 'Like removed' })
     }
     catch (error) {
@@ -151,6 +151,16 @@ app.post('/removelike', async (req, res) => {
     }
 })
 
+// Add a new comment
+app.post('/addcomment', async (req, res) => {
+    try {
+        let response = await Post.findOneAndUpdate( {id: req.body.id}, {$push:{comments: req.body.comment}}, {new:true})
+        res.status(200).send({message: 'comment added', response})
+    }
+    catch (error) {
+        res.status(400).send({ message: 'Error updating comments', error})
+    }
+})
 
 
 app.listen(port, () => {
