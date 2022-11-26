@@ -69,6 +69,8 @@ const addLike = (post, userId) => {
     addLikeToBackend(post.id, userId);
 }
 
+
+
 //remove Like from Backend
 const removeLikeFromBackend = async (postId, userId) => {
     var raw = JSON.stringify({
@@ -96,13 +98,38 @@ const removeLike = (post, userId) => {
     removeLikeFromBackend(post.id, userId);
 }
 
+// add comment to backend
+const addCommentToBackend = async(postId, comment) => {
+    var raw = JSON.stringify({
+        "id": postId,
+        "comment": comment
+      });
+      console.log("           ", raw)
+      var requestOptions = {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+      },
+        body: raw,
+        redirect: 'follow'
+      };
+      await fetch("/addcomment", requestOptions)
+        .then(result => console.log("result",result))
+        .catch(error => console.log('error', error));
+}
+
+// fügt einen neuen, eingegebenen Kommentar zum aktuellen Post hinzu
+    const addComment = (post, comment) => {
+        setPosts(...[posts], post.comments.push(comment))
+        addCommentToBackend(post.id, comment)
+    }
 
 //Posts laden
 useEffect(() => {
     getPostsFromBackend()
 }, []);
 
-return [posts, setPosts, addPost, addLike, removeLike];
+return [posts, setPosts, addPost, addLike, removeLike, addComment];
 
 };
 
