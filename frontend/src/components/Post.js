@@ -4,7 +4,7 @@ import { postContext } from '../App';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import * as React from 'react';
 
 import { useContext } from 'react';
@@ -28,33 +28,42 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import { grey } from '@mui/material/colors';
 
-
-// npm install @mui/material
-// npm install @emotion/react
-// npm install @emotion/styled
-// npm install @mui/icons-material
-
-// const LOCAL_STORAGE_KEY = "local_storage_post";
+//-------------------------------------------------------------
 
 const Post = ({ post }) => {
 
-    const userId = uuidv4()     //temporär
+    const userId = "123456789"     //temporär
     const first_name = 'Max'   //temporär
     const userName = 'mini'     //temporär
 
-    const {posts, setPosts, addLike} = useContext(postContext)
+    console.log("Post:", post.title)
 
-    const commentRef = useRef()
-
-    const [expanded, setExpanded] = useState(false);
-    const [treecolored, setTreecolored] = useState(false);
-    const [commentInput, setCommentInput] = useState(false);
-    const [shareItem, setShareItem] = useState(false);
-
+    const { posts, setPosts, addLike, removeLike } = useContext(postContext)
 
     const date = DateToday();
+
+    // useRefs:
+    const commentRef = useRef()
+
+    //useStates:
+    const [expanded, setExpanded] = useState(false);
+    const [treecolored, setTreecolored] = useState(false);
+    const [commentInput, setCommentInput] = useState();
+    const [shareItem, setShareItem] = useState(false);
+
+    // Prüfen, ob der User für diesen Post bereits ein Like gesetzt hat. 
+    let treeState = false;
+    useEffect(() => {
+        if ((post.id !== "undefined") && (post.likes.length > 0)) {
+            treeState = (!post.likes.every(e => {
+                return (e !== userId)
+            }))
+            if(treecolored !== treeState) 
+            setTreecolored(!treecolored)
+        }
+    }, [])
+
 
     // fügt einen neuen, eingegebenen Kommentar zum aktuellen Post hinzu
     const addComment = text => {
@@ -67,7 +76,6 @@ const Post = ({ post }) => {
         }
         post.comments.push(comment)
         setPosts(p);
-        // savePostsToLocalStorage(posts)
     }
 
     // checkt, ob Kommentar eingegeben wurde und ruft die func() addComment auf
@@ -79,24 +87,6 @@ const Post = ({ post }) => {
         commentRef.current.value = "";
         newCommentInput();
     }
-
-    // MUI Funktion: mit einem Klick auf "ExpandMore" werden Kommentare eingeblendet
-    const ExpandMore = styled((props) => {
-        const { expand, ...other } = props;
-        return <IconButton {...other} />;
-    })(({ theme, expand }) => ({
-        transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-        marginRight: 0,
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-    }));
-
-    const ParkIconC = styled(ParkIcon)(({ theme }) => ({
-        marginRight: 0,
-        color: treecolored ? '#195907' : 'grey',
-    }));
-
 
     // Ändert den Status des expanded-States
     const handleExpandClick = () => {
@@ -121,21 +111,38 @@ const Post = ({ post }) => {
     // beim Klick auf den Baum wird ein Like vergeben oder wieder rausgenommen
     const newLikeClick = () => {
         if ((treecolored === false) && (post.likes.find(e => e === userId) === undefined)) {
-            console.log(post)
-            // setPosts(...[posts], post.likes.push(userId));
             addLike(post, userId)
+            setTreecolored(!treecolored)
         } else if (treecolored === true) {
-            const p = [...posts]
-            const userIdIndex = post.likes.findIndex(e => e === userId)
-            const postindex = posts.findIndex(e => e.id === post.id)
-            p[postindex].likes.splice(userIdIndex, 1)
-            setPosts(p)
+            console.log("treecolored von ", post.title, " ist ", treecolored)
+            setTreecolored(!treecolored)
+            removeLike(post, userId)
         }
-        setTreecolored(!treecolored)
     }
+
+//---------------------------------------------
+    // MUI Funktion: mit einem Klick auf "ExpandMore" werden Kommentare eingeblendet
+    const ExpandMore = styled((props) => {
+        const { expand, ...other } = props;
+        return <IconButton {...other} />;
+    })(({ theme, expand }) => ({
+        transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+        marginRight: 0,
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
+    }));
+
+    const ParkIconC = styled(ParkIcon)(({ theme }) => ({
+        marginRight: 0,
+        color: treecolored ? '#195907' : 'grey',
+    }));
+
+
 
     // ............... RETURN .......................................
     return (
+        post ? 
         <Card sx={{
             margin: 1,
             fontSize: 16
@@ -267,6 +274,7 @@ const Post = ({ post }) => {
                 ))
             }
         </Card>
+        : null
     )
 }
 

@@ -4,6 +4,8 @@ import Register from './components/Register';
 import Mainpage from './components/Mainpage';
 import Profile from './components/Profile';
 import usePosts from './hooks/usePosts';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 
 import { createContext } from 'react';
 
@@ -13,24 +15,22 @@ export const postContext = createContext()
 
 function App() {
 
-  const [posts, setPosts, addPost, addLike] = usePosts()
+  const [posts, setPosts, addPost, addLike, removeLike] = usePosts()
 
   return (
     <div className="App">
-      <postContext.Provider value={{ posts, setPosts, addPost, addLike }}>
-        {/* <Header /> */}
+      <postContext.Provider value={{ posts, setPosts, addPost, addLike, removeLike }}>
+        <BrowserRouter>
+        <Routes>
+          <Route path='/' element={ <Mainpage />}/>
+          <Route path='/login' element={ <Login />} />
+          <Route path='/register' element={ <Register /> } />
+          <Route path='/profile' element={ <Profile />} />
+        </Routes>
 
-        {/* <Login /> */}
-
-        {/* <Register />
-
-      <Login /> */}
-        <Mainpage />
-        {/* <Profile /> */}
-
-        {/* <Login /> */}
-
+        </BrowserRouter>
       </postContext.Provider>
+
     </div>
 
   );

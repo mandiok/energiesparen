@@ -9,14 +9,13 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { useNavigate } from "react-router-dom"; 
-import { redirect } from "react-router-dom";
 
 
 export default function MenuAppBar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setAuth(event.target.checked);
@@ -26,12 +25,11 @@ export default function MenuAppBar() {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleFeedClick = () => {
+    navigate("/");
   };
   const handleProfileClick = () => {
-    // navigate("/profile");
-    // redirect("/profile");
+    navigate("/profile");
   }
 
   const handleLogOut = () => {
@@ -80,10 +78,10 @@ export default function MenuAppBar() {
                   horizontal: 'right',
                 }}
                 open={Boolean(anchorEl)}
-                onClose={handleClose}
+                // onClose={handleClose}
               >
                 <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={handleFeedClick}>Feed</MenuItem>
                 <MenuItem onClick={handleLogOut}>Log out</MenuItem>
 
               </Menu>
