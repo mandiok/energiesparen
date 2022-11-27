@@ -20,13 +20,15 @@ const Feed = () => {
 
     const { posts } = useContext(postContext)
 
-    const handleChange = (event) => {
-        setSelection(event.target.value);
-    }
-
     // Anzahl Posts im Feed, die angezeigt werden. 
     // Um weitere zu sehen, gibt es unten Pfeile zum "Blättern"
     const steps = 3
+
+    const handleChange = (event) => {
+        setSelection(event.target.value);
+        setIndexStart(0);
+        setIndexEnd(steps);
+    }
 
     const [indexStart, setIndexStart] = useState(0);
     const [indexEnd, setIndexEnd] = useState(indexStart + steps);
@@ -99,11 +101,12 @@ const Feed = () => {
                 justifyContent: "center",
                 alignItems: 'center',
                 flexDirection: 'column',
-                bgcolor: '#80BF6F',
+                bgcolor: '#e1f3d9',
                 padding: 1,
+                width: "100%"
             }}>
             <Box sx={{
-                padding: 1.5,
+                padding: 1.0,
                 bgcolor: '#fff',
                 margin: 1,
                 borderRadius: 1.0,

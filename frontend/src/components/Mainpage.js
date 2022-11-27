@@ -2,7 +2,7 @@ import Feed from "./Feed";
 import InputPost from "./InputPost";
 import ProfilCard from "./ProfilCard"
 import MenuAppBar from "./HeaderLoggedIn";
-
+import Card from '@mui/material/Card';
 import { Box } from "@mui/system";
 import Container from "@mui/system/Container";
 
@@ -21,17 +21,17 @@ const Mainpage = () => {
                 flexDirection: 'row',
                 alignContent: 'flex-start'
             }} >
-                <Box sx={{ width: '30%' }} >
+                <Box sx={{ width: '20%' }} >
                     <ProfilCard />
                 </Box>
-                <Box>
+                <Box sx={{ width: '45%', margin: 1 }} >
                     <InputPost />
                     <Feed />
                 </Box>
-                <Box sx={{ bgcolor: '#f8f5f5', width: '25%', paddingLeft: 1 }} >
+                <Card sx={{ bgcolor: '#dfe8ec', paddingLeft: 1, width: '20%' }} >
                     <p>weitere Funktionen
                     </p>
-                </Box>
+                </Card>
             </Container>
         </div >
     )

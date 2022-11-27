@@ -138,7 +138,8 @@ const Post = ({ post }) => {
         post ?
             <Card sx={{
                 margin: 1,
-                fontSize: 16
+                fontSize: 16,
+                width: "100%"
             }}>
                 <CardHeader
                     avatar={
