@@ -140,7 +140,7 @@ const InputPost = () => {
             <Button
                 sx={{
                     color: '#3B8DBF',
-                    bgcolor: '#fff',
+                    bgcolor: '#dae6ee',
                     fontWeight: 'bold'
                 }}
                 onClick={handleShowInputClick}
