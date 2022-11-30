@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import { useContext } from "react";
+import { AppContext } from "../providers/AppContext";
 
 // -----------------------------------------------------------
 
@@ -62,7 +63,7 @@ const postArray = [{
 
 const InputPost = () => {
 
-    const {addPost} = useContext(postContext);
+    const {addPost, userData} = useContext(AppContext);
 
     const titelRef = useRef()
     const postRef = useRef()
@@ -80,7 +81,7 @@ const InputPost = () => {
     const createPost = () => {
         const newPost = {
             id: uuidv4(),
-            userId: "userId",
+            userId: userData.id,
             date: DateToday(),
             title: titelRef.current.value,
             text: postRef.current.value,

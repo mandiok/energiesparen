@@ -1,7 +1,7 @@
 import Post from "./Post";
 import { Container, Box } from "@mui/material";
 import { useState } from "react";
-import { postContext } from "../App";
+import { AppContext } from "../providers/AppContext";
 
 import { useContext } from "react";
 import InputLabel from '@mui/material/InputLabel';
@@ -18,11 +18,11 @@ const Feed = () => {
 
     const [selection, setSelection] = useState('Datum');
 
-    const { posts } = useContext(postContext)
+    const { posts } = useContext(AppContext)
 
     // Anzahl Posts im Feed, die angezeigt werden. 
     // Um weitere zu sehen, gibt es unten Pfeile zum "Blättern"
-    const steps = 3
+    const steps = 4
 
     const handleChange = (event) => {
         setSelection(event.target.value);
@@ -37,7 +37,7 @@ const Feed = () => {
     //----------------------------------
     const sort = (sortSelection) => {
 
-        if (sortSelection === "Likes") {
+        if ((sortSelection === "Likes") && posts) {
 
             let array = [];
             for (let i = 0; i < posts.length; i++) {

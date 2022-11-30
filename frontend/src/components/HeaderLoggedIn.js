@@ -34,6 +34,7 @@ export default function MenuAppBar() {
 
   const handleLogOut = () => {
     // setAuth(false)
+    
   }
 
   return (

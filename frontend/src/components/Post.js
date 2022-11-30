@@ -1,6 +1,6 @@
 import DateToday from './DateToday';
 import LikeMarker from './LikeMarker';
-import { postContext } from '../App';
+import { AppContext } from "../providers/AppContext";
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -33,13 +33,9 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 
 const Post = ({ post }) => {
 
-    const userId = "123456789"     //temporär
-    const first_name = 'Max'   //temporär
-    const userName = 'mini'     //temporär
-
     // console.log("Post:", post.title)
 
-    const { posts, setPosts, addLike, removeLike, addComment } = useContext(postContext)
+    const { posts, setPosts, addLike, removeLike, addComment, userData } = useContext(AppContext)
 
     const date = DateToday();
 
@@ -57,7 +53,7 @@ const Post = ({ post }) => {
     useEffect(() => {
         if ((post.id !== "undefined") && (post.likes.length > 0)) {
             treeState = (!post.likes.every(e => {
-                return (e !== userId)
+                return (e !== userData.id)
             }))
             if (treecolored !== treeState)
                 setTreecolored(!treecolored)
@@ -71,7 +67,7 @@ const Post = ({ post }) => {
             ((commentRef.current.value !== "") !== "") {
             const comment = {
                 id: uuidv4(),
-                userId: userId,
+                userId: userData.id,
                 date: date,
                 text: commentRef.current.value,
             }
@@ -103,13 +99,13 @@ const Post = ({ post }) => {
 
     // beim Klick auf den Baum wird ein Like vergeben oder wieder rausgenommen
     const newLikeClick = () => {
-        if ((treecolored === false) && (post.likes.find(e => e === userId) === undefined)) {
-            addLike(post, userId)
+        if ((treecolored === false) && (post.likes.find(e => e === userData.id) === undefined)) {
+            addLike(post, userData.id)
             setTreecolored(!treecolored)
         } else if (treecolored === true) {
             console.log("treecolored von ", post.title, " ist ", treecolored)
             setTreecolored(!treecolored)
-            removeLike(post, userId)
+            removeLike(post, userData.id)
         }
     }
 
@@ -146,10 +142,10 @@ const Post = ({ post }) => {
                         <Avatar
                             sx={{ bgcolor: '#195907' }}
                             aria-label="recipe">
-                            {first_name.substr(0, 1).toUpperCase()}
+                            {userData.user_name.substr(0, 1).toUpperCase()}
                         </Avatar>
                     }
-                    title={userName}
+                    title={userData.user_name}
                     subheader={post.date}
                 />
                 <CardHeader titleTypographyProps={{
