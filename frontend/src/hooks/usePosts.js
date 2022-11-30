@@ -41,6 +41,11 @@ const getPostsFromBackend = async () => {
         });
 };
 
+// Posts laden
+useEffect(() => {
+  getPostsFromBackend()
+}, []);
+
 
 // Add Like to Backend
 const addLikeToBackend = async (postId, userId) => {
@@ -68,7 +73,6 @@ const addLike = (post, userId) => {
     setPosts(...[posts], post.likes.push(userId));
     addLikeToBackend(post.id, userId);
 }
-
 
 
 //remove Like from Backend
@@ -124,10 +128,7 @@ const addCommentToBackend = async(postId, comment) => {
         addCommentToBackend(post.id, comment)
     }
 
-//Posts laden
-useEffect(() => {
-    getPostsFromBackend()
-}, []);
+
 
 return [posts, setPosts, addPost, addLike, removeLike, addComment];
 

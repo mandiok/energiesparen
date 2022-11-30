@@ -12,8 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom"; 
+import { useContext } from 'react';
+import { AppContext } from "../providers/AppContext";
+import jwt_decode from "jwt-decode";
 
 
 const theme = createTheme();
@@ -21,9 +23,12 @@ const theme = createTheme();
  
 export default function SignIn() {
 
+
+  const {LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken} = useContext(AppContext)
+
   const navigate = useNavigate();
 
- 
+
     const handleSubmit = (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
@@ -33,7 +38,7 @@ export default function SignIn() {
       
     };
     const userLogin = async (email, password) => {
-      const response = await fetch('http://localhost:3001/login', {
+      const response = await fetch('/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,6 +49,20 @@ export default function SignIn() {
       console.log(data);
      if (data.status === "ok") {
         alert("Login successful");
+
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data))
+
+        setToken(data.access)
+        console.log("token:", data.access)
+
+        var decodedJwt = jwt_decode(data.access);
+        setUserData(decodedJwt)
+        console.log('userData:', decodedJwt)
+
+        setUser(decodedJwt.email)
+        console.log("user:", decodedJwt.email)
+
+        navigate('/');
       } else {
         alert("Login failed");
       }

@@ -5,31 +5,25 @@ import Mainpage from './components/Mainpage';
 import Profile from './components/Profile';
 import usePosts from './hooks/usePosts';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-
-import { createContext } from 'react';
-
-
-export const postContext = createContext()
-
+import { useContext } from 'react';
+import { AppContext } from './providers/AppContext';
 
 function App() {
 
-  const [posts, setPosts, addPost, addLike, removeLike, addComment] = usePosts()
+  const { user, posts } = useContext(AppContext);
 
   return (
-    <div className="App">
-      <postContext.Provider value={{ posts, setPosts, addPost, addLike, removeLike, addComment }}>
+    <div className="App">  
         <BrowserRouter>
         <Routes>
-          <Route path='/' element={ <Mainpage />}/>
+          <Route path='/' element={ user ? <Mainpage /> : <Login />} />
           <Route path='/login' element={ <Login />} />
           <Route path='/register' element={ <Register /> } />
           <Route path='/profile' element={ <Profile />} />
         </Routes>
 
         </BrowserRouter>
-      </postContext.Provider>
+
 
     </div>
 

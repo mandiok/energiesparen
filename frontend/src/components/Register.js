@@ -54,12 +54,11 @@ export default function SignUp() {
   };
 
 
-
   const saveUserToBackend = async (userData) => {
 
     var config = {
       method: 'post',
-      url: 'http://localhost:3001/register',
+      url: '/register',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -71,7 +70,10 @@ export default function SignUp() {
 
 
   useEffect(() => {
-    if (inputField) saveUserToBackend(inputField);
+    if (inputField) {
+    saveUserToBackend(inputField);
+    navigate('/login')
+  }
   }, [inputField])
 
 

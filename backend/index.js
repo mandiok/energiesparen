@@ -4,6 +4,10 @@ const app = express()
 const port = 3001
 const mongoose = require('mongoose');
 const cors = require('cors');
+var jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 app.use(express.json());
 app.use(cors());
@@ -54,6 +58,7 @@ const User = mongoose.model('User', userSchema);
 const Post = mongoose.model('Post', postSchema);
 
 
+
 //Status Backend
 app.get('/status', (req, res) => {
     res.status(200).send('Backend running!')
@@ -82,7 +87,8 @@ app.post('/register', async (req, res) => {
 
 // LOGIN USER
 app.post('/login', async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
+    let user = await User.findOne({ email: req.body.email });
+    // console.log("User:\n", user)
     if (!user) {
         res.status(400).send({ status: 'error', error: 'Invalid email or password' });
         return;
@@ -90,7 +96,21 @@ app.post('/login', async (req, res) => {
     const validPassword = await bcrypt.compare(req.body.password, user.password);
 
     if (validPassword) {
-        res.status(200).send({ status: 'ok', message: 'User logged in' });
+        const token = jwt.sign(
+            {
+                email: user.email,
+                id: user.id,
+                user_name: user.user_name,
+                url: user.url,
+                message: user.message,
+            },
+            process.env.EXPRESS_APP_JWT_KEY,
+            {
+                expiresIn: '15m',
+            }
+        );
+        // console.log("token:", token)
+        res.status(200).send({ status: 'ok', message: 'User logged in', access: token });
         return;
     }
     res.status(400).send({ status: 'error', error: 'Invalid email or password' });
@@ -154,11 +174,11 @@ app.post('/removelike', async (req, res) => {
 // Add a new comment
 app.post('/addcomment', async (req, res) => {
     try {
-        let response = await Post.findOneAndUpdate( {id: req.body.id}, {$push:{comments: req.body.comment}}, {new:true})
-        res.status(200).send({message: 'comment added', response})
+        let response = await Post.findOneAndUpdate({ id: req.body.id }, { $push: { comments: req.body.comment } }, { new: true })
+        res.status(200).send({ message: 'comment added', response })
     }
     catch (error) {
-        res.status(400).send({ message: 'Error updating comments', error})
+        res.status(400).send({ message: 'Error updating comments', error })
     }
 })
 
