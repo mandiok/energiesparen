@@ -5,12 +5,14 @@ const port = 3001
 const mongoose = require('mongoose');
 const cors = require('cors');
 var jwt = require('jsonwebtoken');
+const cookieparser = require('cookie-parser');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
 app.use(express.json());
 app.use(cors());
+app.use(cookieparser());
 app.use(async function (req, res, next) {
     //await mongoose.connect('mongodb://127.0.0.1:27017/userdb');
     await mongoose.connect('mongodb+srv://admin:energiesparen22@cluster0.kzvc9tg.mongodb.net/userdb?retryWrites=true&w=majority');
@@ -88,15 +90,15 @@ app.post('/register', async (req, res) => {
 // LOGIN USER
 app.post('/login', async (req, res) => {
     let user = await User.findOne({ email: req.body.email });
-    // console.log("User:\n", user)
     if (!user) {
         res.status(400).send({ status: 'error', error: 'Invalid email or password' });
         return;
     }
     const validPassword = await bcrypt.compare(req.body.password, user.password);
 
+
     if (validPassword) {
-        const token = jwt.sign(
+        const accessToken = jwt.sign(
             {
                 email: user.email,
                 id: user.id,
@@ -104,17 +106,77 @@ app.post('/login', async (req, res) => {
                 url: user.url,
                 message: user.message,
             },
-            process.env.EXPRESS_APP_JWT_KEY,
+            process.env.EXPRESS_APP_ACCESS_JWT_KEY,
             {
-                expiresIn: '15m',
+                expiresIn: '5m',
             }
         );
-        // console.log("token:", token)
-        res.status(200).send({ status: 'ok', message: 'User logged in', access: token });
+        const refreshToken = jwt.sign({
+            email: user.email,
+        }, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET, { expiresIn: '45m' });
+
+        // Assigning refresh token in http-only cookie 
+        res.cookie('jwt', refreshToken, {
+            httpOnly: true,
+            sameSite: 'None', secure: true,
+            // maxAge: 24 * 60 * 60 * 1000 // 1 day
+            maxAge: 60 * 60 * 1000
+        });
+
+        // return res.json({ accessToken });
+        res.status(200).send({ status: 'ok', message: 'User logged in', access: accessToken });
         return;
     }
     res.status(400).send({ status: 'error', error: 'Invalid email or password' });
 });
+
+
+// REFRESH TOKEN REQUEST
+app.post('/refreshtoken', async (req, res) => {
+    console.log("\n \n refresh token request")
+
+    console.log("req.body", req.body)
+    let user = await User.findOne({ email: req.body.user });
+    console.log("USER:", user)
+    console.log("\n req.cookie:", req.cookies.jwt)
+    // const refreshToken = req.headers.cookie.slice(4);
+    const refreshToken = req.cookies.jwt;
+
+    console.log(refreshToken)
+    if (refreshToken) {
+            const decode = jwt.verify(refreshToken, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET, err => {
+
+                // console.log(jwt.verify(refreshToken, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET))
+                
+                if (err) {
+                    return res.status(406).json({ message: 'Unauthorized' })
+                }
+                else {
+                    console.log("neuer access token")
+                    const accessToken = jwt.sign({
+                        email: user.email,
+                        id: user.id,
+                        user_name: user.user_name,
+                        url: user.url,
+                        message: user.message,
+                    },
+                        process.env.EXPRESS_APP_ACCESS_JWT_KEY,
+                        {
+                            expiresIn: '5m',
+                        });
+                    return res.status(200).send({ status: 'ok', message: 'Unauthorized', access: accessToken});
+                }
+            });
+            return;
+    }
+})
+
+
+// Delete cookie
+app.get('/clear-cookie', (req, res) => {
+    res.clearCookie('jwt');
+});
+
 
 // Post a post
 app.post('/post', async (req, res) => {

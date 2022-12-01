@@ -9,11 +9,14 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { useNavigate } from "react-router-dom"; 
+import { AppContext } from '../providers/AppContext';
+import { useContext } from 'react';
 
 
 export default function MenuAppBar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const {logoutUser} = useContext(AppContext)
 
   const navigate = useNavigate();
 
@@ -33,7 +36,7 @@ export default function MenuAppBar() {
   }
 
   const handleLogOut = () => {
-    // setAuth(false)
+    logoutUser()
     
   }
 

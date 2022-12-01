@@ -53,14 +53,14 @@ export default function SignIn() {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data))
 
         setToken(data.access)
-        console.log("token:", data.access)
+        // console.log("token:", data.access)
 
         var decodedJwt = jwt_decode(data.access);
         setUserData(decodedJwt)
-        console.log('userData:', decodedJwt)
+        // console.log('userData:', decodedJwt)
 
         setUser(decodedJwt.email)
-        console.log("user:", decodedJwt.email)
+        // console.log("user:", decodedJwt.email)
 
         navigate('/');
       } else {
