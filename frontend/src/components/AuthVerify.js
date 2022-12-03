@@ -32,7 +32,7 @@ const AuthVerify = () => {
       setToken(data.access)
       var decodedJwt = jwt_decode(data.access);
       setUserData(decodedJwt);
-      setUser(decodedJwt.email)
+      setUser(decodedJwt.email);
 
       // console.log("token:", data.access)
       // console.log('userData:', decodedJwt)
@@ -47,16 +47,24 @@ const AuthVerify = () => {
 
   useEffect(() => {
     const ls = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    console.log("ls?", ls)
 
-    if (ls) {
+    if (ls !==null) {
       const decodedJwt = jwt_decode(ls.access)
+      setUserData(decodedJwt);
+      setUser(decodedJwt.email);
 
+      // const timeElapsed = Date.now();
+      // const today = new Date(timeElapsed);
+      // console.log("date:", today)
       console.log("Zeitdifferenz:", (decodedJwt.exp * 1000) - Date.now())
 
       if (decodedJwt.exp * 1000 < Date.now()) {
         console.log("Token abgelaufen, frage nach einem neuen")
         verifyToken(user);
       }
+    } else {
+      logoutUser()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
