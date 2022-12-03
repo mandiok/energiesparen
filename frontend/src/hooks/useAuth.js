@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 
 
@@ -10,6 +10,17 @@ const useAuth = () => {
 
     const LOCAL_STORAGE_KEY = 'accessToken';
 
+    const deleteCookie = async () => {
+      const response = await fetch('/clear-cookie', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        const data = await response.json();
+        console.log(data)
+      }
+
     const logoutUser = () => {
         setUser(undefined);
         setToken(undefined);
@@ -18,15 +29,7 @@ const useAuth = () => {
         deleteCookie();
     }
 
-    const deleteCookie = async () => {
-    const response = await fetch('/clear-cookie', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-      const data = await response.json();
-    }
+
 
     return [LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken, logoutUser];
 }

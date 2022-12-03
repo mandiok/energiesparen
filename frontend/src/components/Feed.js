@@ -10,6 +10,9 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 //---------------------------------------------------------------------
 
@@ -17,8 +20,11 @@ import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 const Feed = () => {
 
     const [selection, setSelection] = useState('Datum');
+    const [filter, setFilter] = useState('alle');
 
-    const { posts } = useContext(AppContext)
+    const { posts, userData } = useContext(AppContext)
+
+
 
     // Anzahl Posts im Feed, die angezeigt werden. 
     // Um weitere zu sehen, gibt es unten Pfeile zum "Blättern"
@@ -30,18 +36,40 @@ const Feed = () => {
         setIndexEnd(steps);
     }
 
+    const handleFilterChange = (event) => {
+        setFilter(event.target.value);
+    }
+
     const [indexStart, setIndexStart] = useState(0);
     const [indexEnd, setIndexEnd] = useState(indexStart + steps);
 
+    let postsArray = [];
+
+
+    //...............................
+    const defArray = () => {
+
+        if (filter === 'alle') {
+            postsArray = [...posts];
+        }
+        else if (filter === 'deine') {
+            postsArray = posts.filter(e => {
+                return (e.userId === userData.id)
+            })
+        }
+        return postsArray;
+    }
 
     //----------------------------------
     const sort = (sortSelection) => {
 
-        if ((sortSelection === "Likes") && posts) {
+        postsArray = defArray();
+
+        if (sortSelection === "Likes") {
 
             let array = [];
-            for (let i = 0; i < posts.length; i++) {
-                array.push([posts[i].likes.length, posts[i].id]);
+            for (let i = 0; i < postsArray.length; i++) {
+                array.push([postsArray[i].likes.length, postsArray[i].id]);
             }
 
             array.sort(function (a, b) {
@@ -51,11 +79,11 @@ const Feed = () => {
             array.reverse();
 
             let postsorted = [];
-            for (let k = 0; k < posts.length; k++) {
+            for (let k = 0; k < postsArray.length; k++) {
                 for (let n = 0; n < array.length; n++) {
                     {
-                        if (array[k][1] === posts[n].id) {
-                            postsorted.push(posts[n]);
+                        if (array[k][1] === postsArray[n].id) {
+                            postsorted.push(postsArray[n]);
                         }
                     }
                 }
@@ -63,27 +91,40 @@ const Feed = () => {
             return postsorted
         }
         else if (sortSelection === "Datum") {
-            return (posts)
+            return (postsArray)
         }
     }
 
     // Berechnet die Indizes für den ersten und letzten anzuzeigenden Post neu,
     // wenn auf "nach links blätern" angeklickt wurde
     const handleSlideLClick = () => {
-        const length = posts.length;
+
+        let length;
+        if (filter === 'alle')
+            length = posts.length;
+        else if (filter === 'deine')
+            length = postsArray.length;
+
         if (indexEnd < length) {
             setIndexStart(indexStart - steps)
             setIndexEnd(indexEnd - steps)
         } else {
+            const tmpstart = indexStart
             setIndexStart(indexStart - steps)
-            setIndexEnd(indexStart - (length - (indexEnd)))
+            setIndexEnd(tmpstart)
         }
     }
 
     // Berechnet die Indizes für den ersten und letzten anzuzeigenden Post neu,
     // wenn auf "nach rechts blätern" angeklickt wurde
     const handleSlideRClick = () => {
-        const length = posts.length;
+
+        let length;
+        if (filter === 'alle')
+            length = posts.length;
+        else if (filter === 'deine')
+            length = postsArray.length;
+
         setIndexStart(indexStart + steps)
         if ((indexEnd + steps) < length) {
             setIndexEnd(indexEnd + steps)
@@ -111,19 +152,31 @@ const Feed = () => {
                 margin: 1,
                 borderRadius: 1.0,
             }}>
-                <FormControl size='small' sx={{ width: 140, mb: 0 }}>
-                    <InputLabel id="demo-simple-select-label">Sortiere nach</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={selection}
-                        label="Sortiere nach"
-                        onChange={handleChange}
-                    >
-                        <MenuItem value={"Datum"}>Datum</MenuItem>
-                        <MenuItem value={"Likes"}>Likes</MenuItem>
-                    </Select>
-                </FormControl>
+                <div style={{ dislpay: 'flex', flexDirection: 'column' }}>
+                    <FormControl size='small' sx={{ width: 140, mb: 0 }}>
+                        <InputLabel id="demo-simple-select-label">Sortiere nach</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={selection}
+                            label="Sortiere nach"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={"Datum"}>Datum</MenuItem>
+                            <MenuItem value={"Likes"}>Likes</MenuItem>
+                        </Select>
+
+                    </FormControl>
+
+                    <div>
+                        <FormControl>
+                            <RadioGroup name="use-radio-group" defaultValue="alle">
+                                <FormControlLabel value="alle" label="Alle" control={<Radio onChange={handleFilterChange} size="small" />} />
+                                <FormControlLabel value="deine" label="Deine" control={<Radio onChange={handleFilterChange} size="small" />} />
+                            </RadioGroup>
+                        </FormControl>
+                    </div>
+                </div>
             </Box>
             <Box sx={{
                 display: 'flex',
@@ -149,7 +202,7 @@ const Feed = () => {
                             : null
                     }
                     {
-                        indexEnd < posts.length ?
+                        indexEnd < postsArray.length ?
                             <ArrowRightIcon fontSize="large" onClick={handleSlideRClick} />
                             : null
                     }
