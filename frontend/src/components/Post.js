@@ -145,7 +145,7 @@ const Post = ({ post }) => {
                             {userData.user_name.substr(0, 1).toUpperCase()}
                         </Avatar>
                     }
-                    title={userData.user_name}
+                    title={post.userName}
                     subheader={post.date}
                 />
                 <CardHeader titleTypographyProps={{
@@ -154,11 +154,15 @@ const Post = ({ post }) => {
                 }}
                     title={post.title}   // posts.title
                 />
+                {
+                    post.picture ? 
                 <CardMedia
                     component="img"
                     height="194"
-                // image={require('../images/postcards/laundry-3390806.jpg')}
+                image={post.picture}
                 />
+                : null
+            }
                 <CardContent>
                     <Typography
                         variant="body2"

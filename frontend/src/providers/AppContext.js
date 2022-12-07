@@ -9,12 +9,12 @@ const AppContext = createContext();
 const AppContextProvider = ({children}) => {
 
     const [LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken, logoutUser] = useAuth();
-    const [posts, setPosts, addPost, addLike, removeLike, addComment] = usePosts();
+    const [posts, setPosts, addPost, addLike, removeLike, addComment, getPostsFromBackend] = usePosts();
 
     return (
         <AppContext.Provider value={{ LOCAL_STORAGE_KEY, user, setUser, token, setToken, logoutUser,
             userData, setUserData, 
-            posts, setPosts, addPost, addLike, removeLike, addComment }} >
+            posts, setPosts, addPost, addLike, removeLike, addComment, getPostsFromBackend}} >
             {children}
         </AppContext.Provider>
     )
