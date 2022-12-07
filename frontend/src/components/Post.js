@@ -33,7 +33,6 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 
 const Post = ({ post }) => {
 
-    // console.log("Post:", post.title)
 
     const { posts, setPosts, addLike, removeLike, addComment, userData } = useContext(AppContext)
 
@@ -104,10 +103,12 @@ const Post = ({ post }) => {
             setTreecolored(!treecolored)
         } else if (treecolored === true) {
             console.log("treecolored von ", post.title, " ist ", treecolored)
-            setTreecolored(!treecolored)
             removeLike(post, userData.id)
+            console.log("test")
+            setTreecolored(!treecolored)
         }
     }
+
 
     //----- MUI ----------------------------------
     // MUI Funktion: mit einem Klick auf "ExpandMore" werden Kommentare eingeblendet
@@ -126,7 +127,6 @@ const Post = ({ post }) => {
         marginRight: 0,
         color: treecolored ? '#195907' : 'grey',
     }));
-
 
 
     // ............... RETURN .......................................

@@ -159,12 +159,17 @@ app.post('/login', async (req, res) => {
             },
             process.env.EXPRESS_APP_ACCESS_JWT_KEY,
             {
-                expiresIn: '15m',
+                expiresIn: '5m',
             }
         );
-        const refreshToken = jwt.sign({
-            email: user.email,
-        }, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET, { expiresIn: '45m' });
+        const refreshToken = jwt.sign(
+            {
+                email: user.email,
+            },
+            process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET,
+            { 
+                expiresIn: '24h' 
+            });
 
         // Assigning refresh token in http-only cookie 
         res.cookie('jwt', refreshToken, {
@@ -184,22 +189,18 @@ app.post('/login', async (req, res) => {
 
 // REFRESH TOKEN REQUEST
 app.post('/refreshtoken', async (req, res) => {
-    console.log("\n \n refresh token request")
+    console.log("\n \nrefresh token request")
 
-    console.log("req.body", req.body)
     let user = await User.findOne({ email: req.body.user });
-    console.log("USER:", user)
-    console.log("\n req.cookie:", req.cookies.jwt)
-    // const refreshToken = req.headers.cookie.slice(4);
+
     const refreshToken = req.cookies.jwt;
 
-    console.log(refreshToken)
+
     if (refreshToken) {
         const decode = jwt.verify(refreshToken, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET, err => {
 
-            // console.log(jwt.verify(refreshToken, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET))
-
             if (err) {
+                console.log("Error refreshing accessToken")
                 return res.status(406).json({ message: 'Unauthorized' })
             }
             else {
@@ -245,13 +246,12 @@ app.get('/posts', async (req, res) => {
 // Post a post
 app.post('/post', upload.single('file'), async (req, res) => {
 
-    console.log(req.body)
-    console.log(req.file)
+    // console.log(req.body)
+    // console.log(req.file)
     let cloudinaryURL;
 
-    if (req.file) 
-    {
-        
+    if (req.file) {
+
         try {
             const saveFileResult = await asyncSaveFile(req.file.originalname, req.file.buffer);
             cloudinaryURL = await uploadImage(req.file.originalname);
@@ -301,9 +301,13 @@ app.post('/addlike', async (req, res) => {
 // Remove a like
 app.post('/removelike', async (req, res) => {
     try {
-        console.log(req.body.id)
-        console.log(req.body.userId)
+        let resp = await Post.findOne({id: req.body.id})
+        console.log("post:", resp)
         let response = await Post.findOneAndUpdate({ id: req.body.id }, { $pull: { likes: req.body.userId } }, { new: true })
+
+        let respo = await Post.findOne({id: req.body.id})
+        console.log("post:", respo)
+
         res.status(200).send({ message: 'Like removed' })
     }
     catch (error) {
