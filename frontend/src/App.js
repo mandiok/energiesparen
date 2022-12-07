@@ -11,7 +11,6 @@ function App() {
 
   const { user } = useContext(AppContext);
 
-
   return (
     <div className="App">
       <BrowserRouter>
@@ -30,3 +29,4 @@ function App() {
 }
 
 export default App;
+

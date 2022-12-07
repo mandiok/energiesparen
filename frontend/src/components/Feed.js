@@ -45,7 +45,6 @@ const Feed = () => {
 
     let postsArray = [];
 
-
     //...............................
     const defArray = () => {
 
@@ -197,7 +196,7 @@ const Feed = () => {
                 }
                 <div>
                     {
-                        indexStart > 1 ?
+                        indexStart > 0 ?
                             <ArrowLeftIcon fontSize="large" onClick={handleSlideLClick} />
                             : null
                     }

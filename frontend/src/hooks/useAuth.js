@@ -22,6 +22,7 @@ const useAuth = () => {
       }
 
     const logoutUser = () => {
+      console.log("logout wurde aufgerufen")
         setUser(undefined);
         setToken(undefined);
         setUserData(undefined)

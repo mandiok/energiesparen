@@ -12,40 +12,6 @@ const addPost = (newPost) => {
     addPostsToBackend(newPost);
 }
 
-//Update Post in Backend - add Picture Url
-// const updatePostInBackend = async(postId, url) => {
-//   console.log(postId, url)
-  
-//   var raw = JSON.stringify({
-//     "id": postId,
-//     "userId": url
-//   });
-  
-//   var requestOptions = {
-//     method: 'POST',
-//     headers: {
-//       "Content-Type": "application/json",
-//   },
-//     body: raw,
-//     redirect: 'follow'
-//   };
-
-//   await fetch("/updatePost", requestOptions)
-//   .then(response => console.log(response))
-//   .catch(error => console.log('error', error));
-// }
-
-// //Update Post (Picture)
-// const updatePost = (postId, url) => {
-//   console.log("gesuchte postID?", postId)
-//   posts.map(e=>{console.log("id:\n",e.id)})
-//   const postIndex = posts.findIndex(e => e.id === postId)
-//     console.log("Index:", postIndex)
-//     if(postIndex !== -1) {
-//     setPosts([...posts, posts[postIndex].picture.push(url)]);
-//     updatePostInBackend(postId, url);
-//   }
-// }
 
 //Backend Routen
 const addPostsToBackend = async (posts) => {
@@ -101,7 +67,7 @@ const addLikeToBackend = async (postId, userId) => {
     redirect: 'follow'
   };
   await fetch("/addlike", requestOptions)
-    .then(result => console.log(result))
+    // .then(result => console.log(result))
     .catch(error => console.log('error', error));
 }
 
@@ -135,8 +101,13 @@ const removeLikeFromBackend = async (postId, userId) => {
 const removeLike = (post, userId) => {
     const userIdIndex = post.likes.findIndex(e => e === userId)
     const postindex = posts.findIndex(e => e.id === post.id)
-    setPosts([...posts, posts[postindex].likes.splice(userIdIndex,1)]);
+
+    const temp = [...posts];
+    temp[postindex].likes.splice(userIdIndex, 1)
+    setPosts(temp)
+
     removeLikeFromBackend(post.id, userId);
+
 }
 
 // add comment to backend
