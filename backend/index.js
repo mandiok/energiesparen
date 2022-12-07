@@ -5,10 +5,60 @@ const port = 3001
 const mongoose = require('mongoose');
 const cors = require('cors');
 var jwt = require('jsonwebtoken');
+const multer = require("multer");
 const cookieparser = require('cookie-parser');
 const dotenv = require('dotenv');
+const cloudinary = require('cloudinary');
+const { promisify } = require('util');
+const fs = require('fs');
 
 dotenv.config();
+var upload = multer();
+
+//.................
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET,
+    secure: true
+});
+
+
+
+const uploadImage = async (imagePath) => {
+
+    // Use the uploaded file's name as the asset's public ID and 
+    // allow overwriting the asset with new versions
+    const options = {
+        use_filename: true,
+        unique_filename: false,
+        overwrite: true,
+    };
+
+    try {
+        // Upload the image
+        const result = await cloudinary.uploader.upload(imagePath, options);
+        return result.url;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+const writeFilePromise = promisify(fs.writeFile);
+const asyncSaveFile = async (filename, fileBuffer) => {
+    try {
+        await writeFilePromise(filename, fileBuffer);
+        return "file successfully written";
+    } catch (error) {
+        return error;
+    }
+}
+
+//................
+
+
 
 app.use(express.json());
 app.use(cors());
@@ -45,11 +95,12 @@ const commentSchema = new mongoose.Schema({
 const postSchema = new mongoose.Schema({
     id: String,
     userId: String,
+    userName: String,
     date: String,
     title: String,
     text: String,
     link: String,
-    //picture: String,
+    picture: String,
     likes: [String],
     comments:
         [commentSchema],
@@ -108,7 +159,7 @@ app.post('/login', async (req, res) => {
             },
             process.env.EXPRESS_APP_ACCESS_JWT_KEY,
             {
-                expiresIn: '5m',
+                expiresIn: '15m',
             }
         );
         const refreshToken = jwt.sign({
@@ -144,59 +195,40 @@ app.post('/refreshtoken', async (req, res) => {
 
     console.log(refreshToken)
     if (refreshToken) {
-            const decode = jwt.verify(refreshToken, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET, err => {
+        const decode = jwt.verify(refreshToken, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET, err => {
 
-                // console.log(jwt.verify(refreshToken, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET))
-                
-                if (err) {
-                    return res.status(406).json({ message: 'Unauthorized' })
-                }
-                else {
-                    console.log("neuer access token")
-                    const accessToken = jwt.sign({
-                        email: user.email,
-                        id: user.id,
-                        user_name: user.user_name,
-                        url: user.url,
-                        message: user.message,
-                    },
-                        process.env.EXPRESS_APP_ACCESS_JWT_KEY,
-                        {
-                            expiresIn: '5m',
-                        });
-                    return res.status(200).send({ status: 'ok', message: 'Unauthorized', access: accessToken});
-                }
-            });
-            return;
+            // console.log(jwt.verify(refreshToken, process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET))
+
+            if (err) {
+                return res.status(406).json({ message: 'Unauthorized' })
+            }
+            else {
+                console.log("neuer access token")
+                const accessToken = jwt.sign({
+                    email: user.email,
+                    id: user.id,
+                    user_name: user.user_name,
+                    url: user.url,
+                    message: user.message,
+                },
+                    process.env.EXPRESS_APP_ACCESS_JWT_KEY,
+                    {
+                        expiresIn: '5m',
+                    });
+                return res.status(200).send({ status: 'ok', message: 'Unauthorized', access: accessToken });
+            }
+        });
+        return;
     }
 })
 
 
 // Delete cookie
-app.get('/clear-cookie',  (req, res) => {
+app.get('/clear-cookie', (req, res) => {
     res.clearCookie('jwt').send();
 });
 
 
-// Post a post
-app.post('/post', async (req, res) => {
-    try {
-        const result = await Post.create({
-            id: req.body.id,
-            userId: req.body.userId,
-            date: req.body.date,
-            title: req.body.title,
-            text: req.body.text,
-            link: req.body.link,
-            //picture: req.body.picture,
-            likes: req.body.likes,
-            comments: req.body.comments,
-        });
-        res.status(200).send({ message: 'Post created', result });
-    } catch (error) {
-        res.status(400).send({ message: 'Error creating post', error });
-    }
-});
 
 // Get all posts
 app.get('/posts', async (req, res) => {
@@ -207,6 +239,52 @@ app.get('/posts', async (req, res) => {
         res.status(400).send({ message: 'Error finding posts', error });
     }
 });
+
+
+
+// Post a post
+app.post('/post', upload.single('file'), async (req, res) => {
+
+    console.log(req.body)
+    console.log(req.file)
+    let cloudinaryURL;
+
+    if (req.file) 
+    {
+        
+        try {
+            const saveFileResult = await asyncSaveFile(req.file.originalname, req.file.buffer);
+            cloudinaryURL = await uploadImage(req.file.originalname);
+            console.log("\n \n url", cloudinaryURL, "\n\n")
+
+            fs.unlink(req.file.originalname, () => { });
+        } catch {
+            (error)
+            console.log(error)
+        }
+    }
+
+    try {
+
+        const result = await Post.create({
+            id: req.body.id,
+            userId: req.body.userId,
+            userName: req.body.userName,
+            date: req.body.date,
+            title: req.body.title,
+            text: req.body.text,
+            link: req.body.link,
+            picture: cloudinaryURL,
+            likes: [],
+            comments: [],
+        });
+        res.status(200).send({ message: 'Post created', result });
+    } catch (error) {
+        res.status(400).send({ message: 'Error creating post', error });
+    }
+});
+
+
 
 
 // Add a like

@@ -9,10 +9,11 @@ import IconButton from "@mui/material/Button";
 import CropOriginalIcon from '@mui/icons-material/CropOriginal';
 import AddLinkIcon from '@mui/icons-material/AddLink';
 import Button from "@mui/material/Button";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Box from "@mui/material/Box";
 import { useContext } from "react";
 import { AppContext } from "../providers/AppContext";
+import axios from "axios";
 
 // -----------------------------------------------------------
 
@@ -63,7 +64,7 @@ const postArray = [{
 
 const InputPost = () => {
 
-    const {addPost, userData} = useContext(AppContext);
+    const { addPost, userData, getPostsFromBackend } = useContext(AppContext);
 
     const titelRef = useRef()
     const postRef = useRef()
@@ -74,31 +75,48 @@ const InputPost = () => {
     const [errorTitle, setErrorTitle] = useState(false)
     const [errorText, setErrorText] = useState(false)
     const [inputVisible, setInputVisible] = useState(false)
+    const [postId, setPostId] = useState("")
     const [sendPost, setSendPost] = useState(false)
-
+    const [picture, setPicture] = useState()
+    // const [url, setUrl] = useState("")
 
 
     const createPost = () => {
         const newPost = {
             id: uuidv4(),
             userId: userData.id,
+            userName: userData.user_name,
             date: DateToday(),
             title: titelRef.current.value,
             text: postRef.current.value,
             link: linkRef.current.value,
-            picture: "??",
+            picture: "",
             likes: [],
             comments: []
         }
-        
+
+        console.log("newPost", newPost)
         titelRef.current.value = "";
         postRef.current.value = "";
         linkRef.current.value = "";
         inputRef.current.value = "";
-        setSendPost(true);
-        setInputVisible(false);
 
-        addPost(newPost)
+        setPostId(newPost.id);
+        setSendPost(!sendPost);
+        // setInputVisible(false);
+
+        // addPost(newPost)
+        if (picture) {
+            console.log("\n picture vorhanden \n")
+            var formData = new FormData();
+            formData.append('file', picture)
+        } else {
+            console.log("\n kein picture vorhanden")
+            var formData = new FormData();
+        }
+
+        addPostsToBackend2(newPost, formData)
+        setPicture()
     }
 
     const handleAddLink = () => {
@@ -113,11 +131,56 @@ const InputPost = () => {
         setErrorText(false)
     }
 
+    const addPostsToBackend2 = async (newPost, formData) => {
+
+        console.log("der neue Post ", newPost)
+        // console.log("formData:", formData)
+
+        formData.append('id', newPost.id)
+        formData.append('userId', newPost.userId)
+        formData.append('userName', newPost.userName)
+        formData.append('date', newPost.date)
+        formData.append('title', newPost.title)
+        formData.append('text', newPost.text)
+        formData.append('link', newPost.link)
+        formData.append('picture', newPost.picture)
+        formData.append('likes', [])
+        formData.append('comments', [newPost.comments])
+
+        console.log("formData:", formData.file)
+
+        await fetch("/post", {
+            method: "POST",
+            // headers: {
+            //     'Content-Type': 'multipart/form-data'
+            // },
+            body: formData
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Success:", data);
+                setInputVisible(false);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
+
+
+    const handleFileChange = (e) => {
+        console.log(e.target.files[0])
+        setPicture(e.target.files[0])
+    }
+
+
     const handleSendClick = () => {
         if (titelRef.current.value === "")
             setErrorTitle(true)
         if (postRef.current.value === "")
             setErrorText(true)
+        // if (picture)
+        //     savePictureInBackend()
+
         if ((!errorTitle && !errorText) && (titelRef.current.value !== "") && (postRef.current.value !== ""))
             createPost();
     }
@@ -126,7 +189,6 @@ const InputPost = () => {
         setInputVisible(!inputVisible)
     }
 
-    // saveImage fehlt                  !!!!!!
 
     return (
         <Box sx={{
@@ -181,12 +243,17 @@ const InputPost = () => {
                             aria-label="upload picture"
                             component="label"
                         >
-                            <input
+                            <input      //Bild
                                 hidden accept="image/*"
-                                type="file" />
-                            <CropOriginalIcon sx={{ color: '#3c850b' }} />
-                            <input
-                                accept="image/*"
+                                type="file"
+                                onChange={(e) => handleFileChange(e)}
+                            /> 
+
+                            <CropOriginalIcon sx={{ color: '#3c850b', 
+                            bgcolor: picture ? "grey" : null,
+                            borderRadius: "5px"}} />
+                            <input     
+                                // accept="image/*"
                                 type="text"
                                 ref={inputRef}
                                 hidden

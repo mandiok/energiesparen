@@ -8,11 +8,48 @@ import { useState, useEffect } from "react";
 const addPost = (newPost) => {
 
     setPosts([...posts, newPost])
+    console.log(" Post geht ins Backend", newPost)
     addPostsToBackend(newPost);
 }
 
+//Update Post in Backend - add Picture Url
+// const updatePostInBackend = async(postId, url) => {
+//   console.log(postId, url)
+  
+//   var raw = JSON.stringify({
+//     "id": postId,
+//     "userId": url
+//   });
+  
+//   var requestOptions = {
+//     method: 'POST',
+//     headers: {
+//       "Content-Type": "application/json",
+//   },
+//     body: raw,
+//     redirect: 'follow'
+//   };
+
+//   await fetch("/updatePost", requestOptions)
+//   .then(response => console.log(response))
+//   .catch(error => console.log('error', error));
+// }
+
+// //Update Post (Picture)
+// const updatePost = (postId, url) => {
+//   console.log("gesuchte postID?", postId)
+//   posts.map(e=>{console.log("id:\n",e.id)})
+//   const postIndex = posts.findIndex(e => e.id === postId)
+//     console.log("Index:", postIndex)
+//     if(postIndex !== -1) {
+//     setPosts([...posts, posts[postIndex].picture.push(url)]);
+//     updatePostInBackend(postId, url);
+//   }
+// }
+
 //Backend Routen
 const addPostsToBackend = async (posts) => {
+  console.log("der neue Post ", posts)
     await fetch("/post", {
         method: "POST",
         headers: {
@@ -130,7 +167,7 @@ const addCommentToBackend = async(postId, comment) => {
 
 
 
-return [posts, setPosts, addPost, addLike, removeLike, addComment];
+return [posts, setPosts, addPost, addLike, removeLike, addComment, getPostsFromBackend];
 
 };
 

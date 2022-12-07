@@ -60,7 +60,7 @@ const AuthVerify = () => {
       console.log("Zeitdifferenz:", (decodedJwt.exp * 1000) - Date.now())
 
       if (decodedJwt.exp * 1000 < Date.now()) {
-        console.log("Token abgelaufen, frage nach einem neuen")
+        console.log("Token abgelaufen")
         verifyToken(user);
       }
     } else {

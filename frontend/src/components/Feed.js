@@ -28,7 +28,7 @@ const Feed = () => {
 
     // Anzahl Posts im Feed, die angezeigt werden. 
     // Um weitere zu sehen, gibt es unten Pfeile zum "Blättern"
-    const steps = 4
+    const steps = 1
 
     const handleChange = (event) => {
         setSelection(event.target.value);
@@ -91,7 +91,7 @@ const Feed = () => {
             return postsorted
         }
         else if (sortSelection === "Datum") {
-            return (postsArray)
+            return (postsArray.reverse())
         }
     }
 
