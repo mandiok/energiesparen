@@ -89,6 +89,7 @@ const userSchema = new mongoose.Schema({
 const commentSchema = new mongoose.Schema({
     id: String,
     userId: String,
+    userName: String,
     date: String,
     text: String
 });
@@ -154,6 +155,8 @@ app.post('/login', async (req, res) => {
                 email: user.email,
                 id: user.id,
                 user_name: user.user_name,
+                first_name: user.first_name,
+                last_name: user.last_name,
                 url: user.url,
                 message: user.message,
             },
@@ -167,8 +170,8 @@ app.post('/login', async (req, res) => {
                 email: user.email,
             },
             process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET,
-            { 
-                expiresIn: '24h' 
+            {
+                expiresIn: '24h'
             });
 
         // Assigning refresh token in http-only cookie 
@@ -209,6 +212,8 @@ app.post('/refreshtoken', async (req, res) => {
                     email: user.email,
                     id: user.id,
                     user_name: user.user_name,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
                     url: user.url,
                     message: user.message,
                 },
@@ -229,6 +234,26 @@ app.get('/clear-cookie', (req, res) => {
     res.clearCookie('jwt').send();
 });
 
+
+
+app.get('/user-data', async (req, res) => {
+    try {
+    let result = await User.findOne({ id: req.query.id })
+
+    const data = {
+        user_name: result.user_name,
+        first_name: result.first_name,
+        last_name: result.last_name,
+        email: result.email,
+        url: result.url,
+        message: result.message
+    }
+    // console.log(data)
+      res.status(200).send(data)
+    } catch (error) {
+        res.status(400).send({message: "error", error})
+    }
+})
 
 
 // Get all posts
@@ -301,12 +326,7 @@ app.post('/addlike', async (req, res) => {
 // Remove a like
 app.post('/removelike', async (req, res) => {
     try {
-        let resp = await Post.findOne({id: req.body.id})
-        console.log("post:", resp)
         let response = await Post.findOneAndUpdate({ id: req.body.id }, { $pull: { likes: req.body.userId } }, { new: true })
-
-        let respo = await Post.findOne({id: req.body.id})
-        console.log("post:", respo)
 
         res.status(200).send({ message: 'Like removed' })
     }

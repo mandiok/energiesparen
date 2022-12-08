@@ -13,7 +13,8 @@ import { useContext } from "react";
 
 const Mainpage = () => {
 
-    const { posts } = useContext(AppContext);
+    const { posts, userData } = useContext(AppContext);
+    console.log("userdata",userData)
 
     if (posts) {
         return (

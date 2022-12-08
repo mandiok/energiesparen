@@ -1,10 +1,12 @@
+import { AppContext } from "../providers/AppContext";
+//...................................................
+import { useContext, useState, useEffect } from 'react';
+
 import Card from '@mui/material/Card';
 import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
 import ParkIcon from '@mui/icons-material/Park';
-import { Box, Typography } from '@mui/material';
-import { AppContext } from "../providers/AppContext";
-import { useContext, useState, useEffect } from 'react';
+import { Box } from '@mui/material';
 
 //----------------------------------------------------------
 
@@ -12,10 +14,10 @@ import { useContext, useState, useEffect } from 'react';
 const ProfilCard = () => {
 
     const { userData, posts } = useContext(AppContext)
-    
+
     const [userPosts, setUserPosts] = useState(0)
     const [userLikes, setUserLikes] = useState(0)
-
+    
     const checkData = () => {
         let likes = 0;
         let postnumber = 0;
@@ -28,12 +30,14 @@ const ProfilCard = () => {
         setUserPosts(postnumber)
         setUserLikes(likes)
     }
-
-
+    
+    
     useEffect(() => {
             checkData()
     }, [])
 
+    //............................................................
+    
 
     if (posts)
         return (

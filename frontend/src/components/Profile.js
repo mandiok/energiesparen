@@ -1,27 +1,33 @@
 import MenuAppBar from './HeaderLoggedIn'
-
+import { AppContext } from '../providers/AppContext';
+//...................................................
 import * as React from 'react';
-import Box from '@mui/material/Box';
+import { useContext, useEffect } from 'react';
+
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
 import TextField from '@mui/material/TextField';
 
-const Profil = () => {
+//---------------------------------------------------
 
-    const first_name = 'Martin'
-    const last_name = 'Mustermann'
-    const user_name = ' Martini'
-    const email = 'xxx@xx.de'
-    const website = ''
-    const message = ''
+const Profile = () => {
+
+    const {userData, getProfileData, userProfile} = useContext(AppContext)
+
+    console.log(userData.id)
+
+    useEffect(() => {
+        getProfileData(userData.id)
+    }, [])
+
+    console.log(userProfile)
 
     return (
+        userProfile &&
         <div >
             <MenuAppBar />
             <Container sx={{
@@ -46,7 +52,7 @@ const Profil = () => {
                                     marginLeft: 1.5
                                 }}
                                 aria-label="recipe">
-                                {first_name.substr(0, 1).toUpperCase()}
+                                { userProfile.first_name.substr(0, 1).toUpperCase()}
                             </Avatar>
                         }
                     />
@@ -56,19 +62,19 @@ const Profil = () => {
                             id="outlined-disabled"
                             disabled
                             label='Vorname'
-                            defaultValue={first_name}
+                            defaultValue={userProfile.first_name}
                         />
                         <TextField sx={{ margin: 1, minWidth: 230 }}
                             id="outlined-disabled"
                             disabled
                             label='Nachname'
-                            defaultValue={last_name}
+                            defaultValue={userProfile.last_name}
                         />
                         <TextField sx={{ ml: 1, mt: 2, minWidth: 300 }}
                             id="outlined-disabled"
                             disabled
                             label='E-Mail Adresse'
-                            defaultValue={email}
+                            defaultValue={userProfile.email}
                         />
                     </CardContent>
                     <CardContent>
@@ -77,7 +83,7 @@ const Profil = () => {
                             id="outlined"
                             disabled
                             label='Username'
-                            defaultValue={user_name}
+                            defaultValue={userProfile.user_name}
                         />
                     </CardContent>
 
@@ -86,13 +92,13 @@ const Profil = () => {
                         id="outlined"
                         disabled
                         label='Website'
-                        defaultValue={website}
+                        defaultValue={userProfile.website}
                     />
                     <TextField sx={{ ml: 3, mb: 2, minWidth: 300 }}
                         id="outlined"
                         disabled
                         label='Message'
-                        defaultValue={message}
+                        defaultValue={userProfile.message}
                     />
                     <CardContent>
                     </CardContent>
@@ -103,5 +109,5 @@ const Profil = () => {
     )
 }
 
-export default Profil;
+export default Profile;
 
