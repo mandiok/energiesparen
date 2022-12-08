@@ -1,9 +1,9 @@
 import Post from "./Post";
-import { Container, Box } from "@mui/material";
-import { useState } from "react";
 import { AppContext } from "../providers/AppContext";
+//..............................................
+import { useState, useContext } from "react";
 
-import { useContext } from "react";
+import { Container, Box } from "@mui/material";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -22,13 +22,19 @@ const Feed = () => {
     const [selection, setSelection] = useState('Datum');
     const [filter, setFilter] = useState('alle');
 
-    const { posts, userData } = useContext(AppContext)
+    const { posts, userData, sort } = useContext(AppContext)
 
 
+    const handleFilterChange = (event) => {
+        setFilter(event.target.value);
+    }
+
+    // ermittlere Posts, die dargestellt werden sollen
+    let postsArray = sort(posts, userData, selection, filter)
 
     // Anzahl Posts im Feed, die angezeigt werden. 
     // Um weitere zu sehen, gibt es unten Pfeile zum "Blättern"
-    const steps = 1
+    const steps = 2
 
     const handleChange = (event) => {
         setSelection(event.target.value);
@@ -36,73 +42,20 @@ const Feed = () => {
         setIndexEnd(steps);
     }
 
-    const handleFilterChange = (event) => {
-        setFilter(event.target.value);
-    }
-
     const [indexStart, setIndexStart] = useState(0);
     const [indexEnd, setIndexEnd] = useState(indexStart + steps);
 
-    let postsArray = [];
 
-    //...............................
-    const defArray = () => {
-
-        if (filter === 'alle') {
-            postsArray = [...posts];
-        }
-        else if (filter === 'deine') {
-            postsArray = posts.filter(e => {
-                return (e.userId === userData.id)
-            })
-        }
-        return postsArray;
+    //-
+    const getLength = (filter) => {
+        if (filter === 'alle') return (posts.length);
+        else if (filter === 'deine') return (postsArray.length);
     }
-
-    //----------------------------------
-    const sort = (sortSelection) => {
-
-        postsArray = defArray();
-
-        if (sortSelection === "Likes") {
-
-            let array = [];
-            for (let i = 0; i < postsArray.length; i++) {
-                array.push([postsArray[i].likes.length, postsArray[i].id]);
-            }
-
-            array.sort(function (a, b) {
-                return a[0] - b[0]
-            })
-
-            array.reverse();
-
-            let postsorted = [];
-            for (let k = 0; k < postsArray.length; k++) {
-                for (let n = 0; n < array.length; n++) {
-                    {
-                        if (array[k][1] === postsArray[n].id) {
-                            postsorted.push(postsArray[n]);
-                        }
-                    }
-                }
-            }
-            return postsorted
-        }
-        else if (sortSelection === "Datum") {
-            return (postsArray.reverse())
-        }
-    }
-
     // Berechnet die Indizes für den ersten und letzten anzuzeigenden Post neu,
     // wenn auf "nach links blätern" angeklickt wurde
     const handleSlideLClick = () => {
 
-        let length;
-        if (filter === 'alle')
-            length = posts.length;
-        else if (filter === 'deine')
-            length = postsArray.length;
+        const length = getLength(filter)
 
         if (indexEnd < length) {
             setIndexStart(indexStart - steps)
@@ -118,19 +71,16 @@ const Feed = () => {
     // wenn auf "nach rechts blätern" angeklickt wurde
     const handleSlideRClick = () => {
 
-        let length;
-        if (filter === 'alle')
-            length = posts.length;
-        else if (filter === 'deine')
-            length = postsArray.length;
+        const length = getLength(filter)
 
         setIndexStart(indexStart + steps)
-        if ((indexEnd + steps) < length) {
+
+        if ((indexEnd + steps) < length)
             setIndexEnd(indexEnd + steps)
-        } else {
+        else
             setIndexEnd(length)
-        }
     }
+
 
     // -----------------------------------------------------------        
 
@@ -151,7 +101,7 @@ const Feed = () => {
                 margin: 1,
                 borderRadius: 1.0,
             }}>
-                <div style={{ dislpay: 'flex', flexDirection: 'column' }}>
+                <div style={{ dislpay: 'flex', flexDirection: 'row' }}>
                     <FormControl size='small' sx={{ width: 140, mb: 0 }}>
                         <InputLabel id="demo-simple-select-label">Sortiere nach</InputLabel>
                         <Select
@@ -164,14 +114,17 @@ const Feed = () => {
                             <MenuItem value={"Datum"}>Datum</MenuItem>
                             <MenuItem value={"Likes"}>Likes</MenuItem>
                         </Select>
-
                     </FormControl>
-
                     <div>
                         <FormControl>
+                            <span style={{ color: '#6c87df', marginTop: '10px' }}>Zeige</span>
                             <RadioGroup name="use-radio-group" defaultValue="alle">
-                                <FormControlLabel value="alle" label="Alle" control={<Radio onChange={handleFilterChange} size="small" />} />
-                                <FormControlLabel value="deine" label="Deine" control={<Radio onChange={handleFilterChange} size="small" />} />
+                                <FormControlLabel value="alle" label="Alle" control={<Radio onChange={handleFilterChange} size="small"
+                                    sx={{ marginLeft: '15px' }} />} />
+                                <span style={{ color: '#6c87df', marginTop: '1px' }}>oder nur</span>
+                                <FormControlLabel value="deine" label="Deine" control={<Radio onChange={handleFilterChange} size="small"
+                                    sx={{ marginLeft: '15px' }} />} />
+                                <span style={{ color: '#6c87df', marginTop: '1px' }}> Beiträge</span>
                             </RadioGroup>
                         </FormControl>
                     </div>
@@ -184,7 +137,8 @@ const Feed = () => {
             }} >
                 {
                     posts &&
-                    sort(selection).slice(indexStart, indexEnd).map(e => (
+                    // sort(selection).slice(indexStart, indexEnd).map(e => (
+                    postsArray.slice(indexStart, indexEnd).map(e => (
                         <Post
                             key={e.id}
                             post={e}

@@ -1,4 +1,9 @@
+import { AppContext } from '../providers/AppContext';
+//.....................................................
+import { useNavigate } from "react-router-dom"; 
+import { useContext } from 'react';
 import * as React from 'react';
+//.....................................................
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -8,21 +13,16 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { useNavigate } from "react-router-dom"; 
-import { AppContext } from '../providers/AppContext';
-import { useContext } from 'react';
+//.....................................................
+
 
 
 export default function MenuAppBar() {
-  const [auth, setAuth] = React.useState(true);
+                  
   const [anchorEl, setAnchorEl] = React.useState(null);
   const {logoutUser} = useContext(AppContext)
 
   const navigate = useNavigate();
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -55,9 +55,9 @@ export default function MenuAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            ...
+            
           </Typography>
-          {auth && (
+          {
             <div>
               <IconButton
                 size="large"
@@ -82,7 +82,6 @@ export default function MenuAppBar() {
                   horizontal: 'right',
                 }}
                 open={Boolean(anchorEl)}
-                // onClose={handleClose}
               >
                 <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
                 <MenuItem onClick={handleFeedClick}>Feed</MenuItem>
@@ -90,7 +89,7 @@ export default function MenuAppBar() {
 
               </Menu>
             </div>
-          )}
+          }
         </Toolbar>
       </AppBar>
     </Box>

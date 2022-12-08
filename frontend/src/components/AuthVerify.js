@@ -1,7 +1,8 @@
-import { useEffect } from "react";
-import { useContext } from "react";
-import { useLocation } from "react-router-dom";
 import { AppContext } from '../providers/AppContext';
+//.....................................................
+import { useEffect, useContext } from "react";
+import { useLocation } from "react-router-dom";
+
 import jwt_decode from "jwt-decode";
 
 //-----------------------------------------------
@@ -9,11 +10,11 @@ import jwt_decode from "jwt-decode";
 
 const AuthVerify = () => {
 
-  const { LOCAL_STORAGE_KEY, user, logoutUser, setToken, setUserData, setUser } = useContext(AppContext);
+  const { LOCAL_STORAGE_KEY, logoutUser, setToken, setUserData, setUser } = useContext(AppContext);
 
   let location = useLocation();
 
-  //..........................
+  //.................................................
   const verifyToken = async (user) => {
 
     const response = await fetch('/refreshtoken', {
@@ -35,34 +36,26 @@ const AuthVerify = () => {
       setUserData(decodedJwt);
       setUser(decodedJwt.email);
 
-      // console.log("token:", data.access)
-      // console.log('userData:', decodedJwt)
-      // console.log("user:", decodedJwt.email)
     } else {
       alert("Token refresh failed");
       logoutUser()
     }
   };
 
-  //......................
+  //................................................
+  // Schaue mit dem accessToken, ob die Zugriffszeit abgelaufen ist.
+  // wenn nicht, erneuere die Zugriffszeit, sonst => logout
 
   useEffect(() => {
 
     const ls = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    console.log("ls?", ls)
-
-
     
     if (ls !== null) {
       console.log("Prüfe, ob die Zeit abgelaufen ist.")
       const decodedJwt = jwt_decode(ls.access)
       setUserData(decodedJwt);
       setUser(decodedJwt.email);
-      console.log(decodedJwt.email)
 
-      // const timeElapsed = Date.now();
-      // const today = new Date(timeElapsed);
-      // console.log("date:", today)
       console.log("Zeitdifferenz:", (decodedJwt.exp * 1000) - Date.now())
 
       if (decodedJwt.exp * 1000 > Date.now()) {

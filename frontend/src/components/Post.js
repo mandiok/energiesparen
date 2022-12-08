@@ -34,7 +34,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 const Post = ({ post }) => {
 
 
-    const { posts, setPosts, addLike, removeLike, addComment, userData } = useContext(AppContext)
+    const { addLike, removeLike, addComment, userData } = useContext(AppContext)
 
     const date = DateToday();
 
@@ -67,6 +67,7 @@ const Post = ({ post }) => {
             const comment = {
                 id: uuidv4(),
                 userId: userData.id,
+                userName: userData.user_name,
                 date: date,
                 text: commentRef.current.value,
             }
@@ -76,6 +77,39 @@ const Post = ({ post }) => {
         newCommentInput();
     }
 
+
+    // beim Klick auf den Baum wird ein Like vergeben oder wieder rausgenommen
+    const newLikeClick = () => {
+        if ((treecolored === false) && (post.likes.find(e => e === userData.id) === undefined)) {
+            addLike(post, userData.id)
+            setTreecolored(!treecolored)
+        } else if (treecolored === true) {
+            removeLike(post, userData.id)
+            setTreecolored(!treecolored)
+        }
+    }
+
+    //----- MUI ----------------------------------
+    // MUI Funktion: mit einem Klick auf "ExpandMore" werden Kommentare eingeblendet
+    const ExpandMore = styled((props) => {
+        const { expand, ...other } = props;
+        return <IconButton {...other} />;
+    })(({ theme, expand }) => ({
+        transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+        marginRight: 0,
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
+    }));
+
+    const ParkIconC = styled(ParkIcon)(({ theme }) => ({
+        marginRight: 0,
+        color: treecolored ? '#195907' : 'grey',
+    }));
+
+
+    //..................................................
+    
     // Ändert den Status des expanded-States
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -95,38 +129,6 @@ const Post = ({ post }) => {
     const handleSendClick = () => {
         newComment();
     }
-
-    // beim Klick auf den Baum wird ein Like vergeben oder wieder rausgenommen
-    const newLikeClick = () => {
-        if ((treecolored === false) && (post.likes.find(e => e === userData.id) === undefined)) {
-            addLike(post, userData.id)
-            setTreecolored(!treecolored)
-        } else if (treecolored === true) {
-            console.log("treecolored von ", post.title, " ist ", treecolored)
-            removeLike(post, userData.id)
-            console.log("test")
-            setTreecolored(!treecolored)
-        }
-    }
-
-
-    //----- MUI ----------------------------------
-    // MUI Funktion: mit einem Klick auf "ExpandMore" werden Kommentare eingeblendet
-    const ExpandMore = styled((props) => {
-        const { expand, ...other } = props;
-        return <IconButton {...other} />;
-    })(({ theme, expand }) => ({
-        transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-        marginRight: 0,
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-    }));
-
-    const ParkIconC = styled(ParkIcon)(({ theme }) => ({
-        marginRight: 0,
-        color: treecolored ? '#195907' : 'grey',
-    }));
 
 
     // ............... RETURN .......................................
@@ -254,8 +256,9 @@ const Post = ({ post }) => {
                                 subheaderTypographyProps={{
                                     fontSize: '1.1em'
                                 }}
-                                title={e.userId}
+                                title={e.userName}
                                 subheader={e.date}
+                                sx={{paddingBottom: "0px" }}
                             />
                             <CardContent >
                                 <Typography

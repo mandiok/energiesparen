@@ -6,6 +6,7 @@ const useAuth = () => {
 
     const [user, setUser] = useState()
     const [userData, setUserData] = useState()
+    const [userProfile, setUserProfile] = useState()
     const [token, setToken] = useState()
 
     const LOCAL_STORAGE_KEY = 'accessToken';
@@ -18,7 +19,6 @@ const useAuth = () => {
           }
         });
         const data = await response.json();
-        console.log(data)
       }
 
     const logoutUser = () => {
@@ -31,8 +31,20 @@ const useAuth = () => {
     }
 
 
+    const getProfileData = async userId => {
+      console.log("userid", userId)
+      const response = await fetch('/user-data?id=' + userId, {
+        method: 'GET',
+      })
 
-    return [LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken, logoutUser];
+      const data = await response.json();
+      console.log("data",data)
+      setUserProfile(data)
+      // return(data)
+    }
+
+
+    return [LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken, logoutUser, getProfileData, userProfile];
 }
 
 export default useAuth
