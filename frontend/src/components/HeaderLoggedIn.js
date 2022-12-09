@@ -1,6 +1,6 @@
 import { AppContext } from '../providers/AppContext';
 //.....................................................
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
 import * as React from 'react';
 //.....................................................
@@ -18,9 +18,9 @@ import Menu from '@mui/material/Menu';
 
 
 export default function MenuAppBar() {
-                  
+
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const {logoutUser} = useContext(AppContext)
+  const { logoutUser  } = useContext(AppContext)
 
   const navigate = useNavigate();
 
@@ -37,8 +37,8 @@ export default function MenuAppBar() {
 
   const handleLogOut = () => {
     logoutUser()
-    
   }
+
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -55,7 +55,7 @@ export default function MenuAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            
+
           </Typography>
           {
             <div>

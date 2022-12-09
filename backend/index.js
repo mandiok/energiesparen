@@ -162,7 +162,7 @@ app.post('/login', async (req, res) => {
             },
             process.env.EXPRESS_APP_ACCESS_JWT_KEY,
             {
-                expiresIn: '5m',
+                expiresIn: '10m',
             }
         );
         const refreshToken = jwt.sign(
@@ -234,26 +234,40 @@ app.get('/clear-cookie', (req, res) => {
     res.clearCookie('jwt').send();
 });
 
-
-
+// get User Data
 app.get('/user-data', async (req, res) => {
+    console.log("fk", req.query.fk)
     try {
     let result = await User.findOne({ id: req.query.id })
 
-    const data = {
-        user_name: result.user_name,
-        first_name: result.first_name,
-        last_name: result.last_name,
-        email: result.email,
-        url: result.url,
-        message: result.message
+    console.log("result:", result, "\n")
+
+    if(req.query.fk === 'myData') {
+        console.log("myData")
+        res.status(200).send({
+          user_name: result.user_name,
+          first_name: result.first_name,
+          last_name: result.last_name,
+          email: result.email,
+          url: result.url,
+          message: result.message
+      })
+      console.log(result.url)
+    } else if (req.query.fk === 'otherUser') {
+        console.log("otherUser wird benötigt")
+        res.status(200).send({
+            user_name: result.user_name,
+            url: result.url,
+            message: result.message
+        })
+        console.log(result.url)
     }
-    // console.log(data)
-      res.status(200).send(data)
     } catch (error) {
+        console.log("error")
         res.status(400).send({message: "error", error})
     }
 })
+
 
 
 // Get all posts

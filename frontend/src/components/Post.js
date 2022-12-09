@@ -34,7 +34,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 const Post = ({ post }) => {
 
 
-    const { addLike, removeLike, addComment, userData } = useContext(AppContext)
+    const { addLike, removeLike, addComment, userData, getProfileData, otherUser, setOtherUser } = useContext(AppContext)
 
     const date = DateToday();
 
@@ -46,6 +46,9 @@ const Post = ({ post }) => {
     const [treecolored, setTreecolored] = useState(false);
     const [commentInput, setCommentInput] = useState();
     const [shareItem, setShareItem] = useState(false);
+    const [isHovering, setIsHovering] = useState(false)
+
+    let timeVar = 0;
 
     // Prüfen, ob der User für diesen Post bereits ein Like gesetzt hat. 
     let treeState = false;
@@ -109,7 +112,7 @@ const Post = ({ post }) => {
 
 
     //..................................................
-    
+
     // Ändert den Status des expanded-States
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -121,7 +124,6 @@ const Post = ({ post }) => {
     }
 
     const handleShareClick = () => {
-        console.log(":", shareItem)
         setShareItem(!shareItem);
     }
 
@@ -129,6 +131,19 @@ const Post = ({ post }) => {
     const handleSendClick = () => {
         newComment();
     }
+
+    const handleMouseOver = () => {
+        setIsHovering(true)
+        getProfileData(post.userId, 'otherUser')
+
+    }
+
+    const handleMouseOut = () => {
+        setIsHovering(false)
+        setOtherUser("")
+    }
+
+    // console.log(otherUser)
 
 
     // ............... RETURN .......................................
@@ -142,14 +157,31 @@ const Post = ({ post }) => {
                 <CardHeader
                     avatar={
                         <Avatar
-                            sx={{ bgcolor: '#195907' }}
+                            sx={{
+                                bgcolor: '#195907',
+                                '&:hover': { bgcolor: '#928f8f', transition: "0.5s" }
+                            }}
+                            onMouseOver={handleMouseOver}
+                            onMouseOut={handleMouseOut}
+                            className='av'
                             aria-label="recipe">
                             {userData.user_name.substr(0, 1).toUpperCase()}
                         </Avatar>
+
                     }
                     title={post.userName}
                     subheader={post.date}
                 />
+                {
+                isHovering &&
+                otherUser &&
+                    <div style={{ 
+                        margin: '0.5rem'
+                        }}>
+                        {otherUser.url}
+                        {otherUser.message}
+                    </div>
+                }
                 <CardHeader titleTypographyProps={{
                     variant: 'subtitle1',
                     fontWeight: 'bold'
@@ -157,14 +189,14 @@ const Post = ({ post }) => {
                     title={post.title}   // posts.title
                 />
                 {
-                    post.picture ? 
-                <CardMedia
-                    component="img"
-                    height="194"
-                image={post.picture}
-                />
-                : null
-            }
+                    post.picture ?
+                        <CardMedia
+                            component="img"
+                            height="194"
+                            image={post.picture}
+                        />
+                        : null
+                }
                 <CardContent>
                     <Typography
                         variant="body2"
@@ -258,7 +290,7 @@ const Post = ({ post }) => {
                                 }}
                                 title={e.userName}
                                 subheader={e.date}
-                                sx={{paddingBottom: "0px" }}
+                                sx={{ paddingBottom: "0px" }}
                             />
                             <CardContent >
                                 <Typography

@@ -9,13 +9,13 @@ const AppContext = createContext();
 
 const AppContextProvider = ({children}) => {
 
-    const [LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken, logoutUser, getProfileData, userProfile] = useAuth();
+    const [LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken, logoutUser, getProfileData, userProfile, otherUser, setOtherUser] = useAuth();
     const [posts, setPosts, addPost, addLike, removeLike, addComment, getPostsFromBackend ] = usePosts();
     const [sort] = useHelpFunc();
 
     return (
-        <AppContext.Provider value={{ LOCAL_STORAGE_KEY, user, setUser, token, setToken, logoutUser, getProfileData, userProfile,
-            userData, setUserData, 
+        <AppContext.Provider value={{ LOCAL_STORAGE_KEY, user, setUser, token, setToken, logoutUser, getProfileData, userProfile, otherUser, setOtherUser,
+            userData, setUserData,
             posts, setPosts, addPost, addLike, removeLike, addComment, getPostsFromBackend, 
             sort }} >
             {children}

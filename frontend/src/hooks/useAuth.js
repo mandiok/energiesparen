@@ -7,7 +7,9 @@ const useAuth = () => {
     const [user, setUser] = useState()
     const [userData, setUserData] = useState()
     const [userProfile, setUserProfile] = useState()
+    const [otherUser, setOtherUser] = useState()
     const [token, setToken] = useState()
+
 
     const LOCAL_STORAGE_KEY = 'accessToken';
 
@@ -18,7 +20,7 @@ const useAuth = () => {
             'Content-Type': 'application/json',
           }
         });
-        const data = await response.json();
+        await response.json();
       }
 
     const logoutUser = () => {
@@ -31,20 +33,22 @@ const useAuth = () => {
     }
 
 
-    const getProfileData = async userId => {
-      console.log("userid", userId)
-      const response = await fetch('/user-data?id=' + userId, {
+    const getProfileData = async (userId, fk) => {
+
+      const response = await fetch('/user-data?id=' + userId + '&fk=' + fk, {
         method: 'GET',
       })
-
       const data = await response.json();
-      console.log("data",data)
-      setUserProfile(data)
-      // return(data)
+
+      if (fk==='myData')
+        setUserProfile(data)
+      else if( fk==='otherUser')
+        setOtherUser(data)
     }
 
 
-    return [LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken, logoutUser, getProfileData, userProfile];
+
+    return [LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken, logoutUser, getProfileData, userProfile, otherUser, setOtherUser];
 }
 
 export default useAuth

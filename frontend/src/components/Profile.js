@@ -11,20 +11,23 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
 import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 
 //---------------------------------------------------
 
 const Profile = () => {
 
-    const {userData, getProfileData, userProfile} = useContext(AppContext)
+    const { userData, getProfileData, userProfile } = useContext(AppContext)
 
-    console.log(userData.id)
+
+    // console.log(userData.id)
 
     useEffect(() => {
-        getProfileData(userData.id)
+        getProfileData(userData.id, 'myData')
     }, [])
 
-    console.log(userProfile)
+
+    // console.log(userProfile)
 
     return (
         userProfile &&
@@ -52,33 +55,37 @@ const Profile = () => {
                                     marginLeft: 1.5
                                 }}
                                 aria-label="recipe">
-                                { userProfile.first_name.substr(0, 1).toUpperCase()}
+                                {userProfile.first_name.substr(0, 1).toUpperCase()}
                             </Avatar>
                         }
                     />
                     <CardContent >
-                        <p>Nur für Dich sichtbar: </p>
-                        <TextField sx={{ margin: 1, minWidth: 200 }}
-                            id="outlined-disabled"
-                            disabled
-                            label='Vorname'
-                            defaultValue={userProfile.first_name}
-                        />
-                        <TextField sx={{ margin: 1, minWidth: 230 }}
-                            id="outlined-disabled"
-                            disabled
-                            label='Nachname'
-                            defaultValue={userProfile.last_name}
-                        />
-                        <TextField sx={{ ml: 1, mt: 2, minWidth: 300 }}
-                            id="outlined-disabled"
-                            disabled
-                            label='E-Mail Adresse'
-                            defaultValue={userProfile.email}
-                        />
+                        <Box
+                            component="form" >
+                            <p>Nur für Dich sichtbar: </p>
+                            <TextField sx={{ margin: 1, minWidth: 200 }}
+                                id="outlined-disabled"
+                                disabled
+                                label='Vorname'
+                                defaultValue={userProfile.first_name}
+                            />
+                            <TextField sx={{ margin: 1, minWidth: 230 }}
+                                id="outlined-disabled"
+                                disabled
+                                label='Nachname'
+                                defaultValue={userProfile.last_name}
+                            />
+                            <TextField sx={{ ml: 1, mt: 2, minWidth: 300 }}
+                                id="outlined-disabled"
+                                disabled
+                                label='E-Mail Adresse'
+                                defaultValue={userProfile.email}
+                            />
+                        </Box>
                     </CardContent>
+
                     <CardContent>
-                        <p>Für alle User sichtbar: </p>
+                        <p style={{ margin: '0.5rem' }}>Für alle User sichtbar: </p>
                         <TextField sx={{ margin: 1, minWidth: 200 }}
                             id="outlined"
                             disabled
@@ -88,24 +95,26 @@ const Profile = () => {
                     </CardContent>
 
 
+                    <p style={{ marginLeft: "1.5rem" }}>Die nachfolgenden Felder kannst Du ändern:</p>
                     <TextField sx={{ ml: 3, mb: 2, minWidth: 300 }}
                         id="outlined"
-                        disabled
+                        // disabled
                         label='Website'
                         defaultValue={userProfile.website}
                     />
                     <TextField sx={{ ml: 3, mb: 2, minWidth: 300 }}
                         id="outlined"
-                        disabled
+                        // disabled
                         label='Message'
                         defaultValue={userProfile.message}
                     />
+
                     <CardContent>
                     </CardContent>
 
                 </Card>
             </Container>
-        </div>
+        </div >
     )
 }
 
