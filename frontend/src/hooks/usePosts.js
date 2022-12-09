@@ -18,7 +18,6 @@ const usePosts = () => {
   //Post hinzufügen
   const addPost = (newPost) => {
     setPosts([...posts, newPost])
-    console.log(" Post geht ins Backend", newPost)
     addPostsToBackend(newPost);
   }
 

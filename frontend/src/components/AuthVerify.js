@@ -10,7 +10,7 @@ import jwt_decode from "jwt-decode";
 
 const AuthVerify = () => {
 
-  const { LOCAL_STORAGE_KEY, logoutUser, setToken, setUserData, setUser } = useContext(AppContext);
+  const { LOCAL_STORAGE_KEY, logoutUser, setToken, setUserData, setUser, posts } = useContext(AppContext);
 
   let location = useLocation();
 
@@ -34,6 +34,7 @@ const AuthVerify = () => {
       setToken(data.access)
       var decodedJwt = jwt_decode(data.access);
       setUserData(decodedJwt);
+      // console.log("test:", userData)
       setUser(decodedJwt.email);
 
     } else {
@@ -46,6 +47,8 @@ const AuthVerify = () => {
   // Schaue mit dem accessToken, ob die Zugriffszeit abgelaufen ist.
   // wenn nicht, erneuere die Zugriffszeit, sonst => logout
 
+  // console.log("Loc", location)
+
   useEffect(() => {
 
     const ls = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -54,8 +57,10 @@ const AuthVerify = () => {
       console.log("Prüfe, ob die Zeit abgelaufen ist.")
       const decodedJwt = jwt_decode(ls.access)
       setUserData(decodedJwt);
+      // console.log("test:" ,userData)
       setUser(decodedJwt.email);
 
+      // expTime, setExpTime
       console.log("Zeitdifferenz:", (decodedJwt.exp * 1000) - Date.now())
 
       if (decodedJwt.exp * 1000 > Date.now()) {
@@ -68,10 +73,11 @@ const AuthVerify = () => {
       }
     }
     else {
+      console.log("Logout")
       logoutUser()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location], []);
+  }, [location, posts]);
 
   return;
 };

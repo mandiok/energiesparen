@@ -24,7 +24,7 @@ const theme = createTheme();
 export default function SignIn() {
 
 
-  const {LOCAL_STORAGE_KEY, user, setUser, userData, setUserData, token, setToken} = useContext(AppContext)
+  const {LOCAL_STORAGE_KEY, setUser, setUserData, setToken} = useContext(AppContext)
 
   const navigate = useNavigate();
 
@@ -46,7 +46,7 @@ export default function SignIn() {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
      if (data.status === "ok") {
         alert("Login successful");
 
@@ -61,6 +61,7 @@ export default function SignIn() {
 
         setUser(decodedJwt.email)
         // console.log("user:", decodedJwt.email)
+
 
         navigate('/');
       } else {
