@@ -1,7 +1,7 @@
 import Post from "./Post";
 import { AppContext } from "../providers/AppContext";
 //..............................................
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import { Container, Box } from "@mui/material";
 import InputLabel from '@mui/material/InputLabel';
@@ -21,20 +21,25 @@ const Feed = () => {
 
     const [selection, setSelection] = useState('Datum');
     const [filter, setFilter] = useState('alle');
+    const [postsArray, setPostsArray] = useState([]);
 
-    const { posts, userData, sort } = useContext(AppContext)
+    const { posts, userData, sort, getIndexRClick, getIndexLClick } = useContext(AppContext)
+///..................................
 
+        // Anzahl Posts im Feed, die angezeigt werden. 
+    // Um weitere zu sehen, gibt es unten Pfeile zum "Blättern"
+    const steps = 2
+
+    const [indexStart, setIndexStart] = useState(0);
+    const [indexEnd, setIndexEnd] = useState(indexStart + steps);
+
+//........................................
 
     const handleFilterChange = (event) => {
         setFilter(event.target.value);
+        setIndexStart(0);
+        setIndexEnd(steps);
     }
-
-    // ermittlere Posts, die dargestellt werden sollen
-    let postsArray = sort(posts, userData, selection, filter)
-
-    // Anzahl Posts im Feed, die angezeigt werden. 
-    // Um weitere zu sehen, gibt es unten Pfeile zum "Blättern"
-    const steps = 2
 
     const handleChange = (event) => {
         setSelection(event.target.value);
@@ -42,45 +47,22 @@ const Feed = () => {
         setIndexEnd(steps);
     }
 
-    const [indexStart, setIndexStart] = useState(0);
-    const [indexEnd, setIndexEnd] = useState(indexStart + steps);
-
-
-    //-
-    const getLength = (filter) => {
-        if (filter === 'alle') return (posts.length);
-        else if (filter === 'deine') return (postsArray.length);
-    }
-    // Berechnet die Indizes für den ersten und letzten anzuzeigenden Post neu,
-    // wenn auf "nach links blätern" angeklickt wurde
     const handleSlideLClick = () => {
-
-        const length = getLength(filter)
-
-        if (indexEnd < length) {
-            setIndexStart(indexStart - steps)
-            setIndexEnd(indexEnd - steps)
-        } else {
-            const tmpstart = indexStart
-            setIndexStart(indexStart - steps)
-            setIndexEnd(tmpstart)
-        }
+        getIndexLClick(posts, filter, postsArray, steps, indexStart, setIndexStart, indexEnd, setIndexEnd);
     }
 
-    // Berechnet die Indizes für den ersten und letzten anzuzeigenden Post neu,
-    // wenn auf "nach rechts blätern" angeklickt wurde
     const handleSlideRClick = () => {
-
-        const length = getLength(filter)
-
-        setIndexStart(indexStart + steps)
-
-        if ((indexEnd + steps) < length)
-            setIndexEnd(indexEnd + steps)
-        else
-            setIndexEnd(length)
+        getIndexRClick(posts, filter, postsArray, steps, indexStart, setIndexStart, indexEnd, setIndexEnd)
     }
 
+//........................................
+    useEffect(() => {
+        setPostsArray(sort(posts, userData, selection, filter))
+    }, [])
+
+    useEffect(() => {
+        setPostsArray(sort(posts, userData, selection, filter))
+    }, [selection, filter])
 
     // -----------------------------------------------------------        
 

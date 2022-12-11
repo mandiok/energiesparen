@@ -6,14 +6,18 @@ import Card from '@mui/material/Card';
 import { Box } from "@mui/system";
 import Container from "@mui/system/Container";
 import { AppContext } from "../providers/AppContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 //---------------------------------------------------
 
 
 const Mainpage = () => {
 
-    const { posts } = useContext(AppContext);
+    const { posts, getProfileData } = useContext(AppContext);
+
+    useEffect(()=> {
+        getProfileData()
+    },[])
 
 
     if (posts) {
