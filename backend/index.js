@@ -12,7 +12,13 @@ const cloudinary = require('cloudinary');
 const { promisify } = require('util');
 const fs = require('fs');
 
-dotenv.config();
+const User = require('./models/UserModel');
+const Post = require('./models/PostModel');
+
+dotenv.config()
+
+const MONGO_URI = process.env.MONGO_URI;
+
 var upload = multer();
 
 //.................
@@ -24,6 +30,7 @@ cloudinary.config({
     secure: true
 });
 
+//.........
 
 
 const uploadImage = async (imagePath) => {
@@ -58,60 +65,16 @@ const asyncSaveFile = async (filename, fileBuffer) => {
 
 //................
 
-
-
 app.use(express.json());
 app.use(cors());
 app.use(cookieparser());
 app.use(async function (req, res, next) {
     //await mongoose.connect('mongodb://127.0.0.1:27017/userdb');
-    await mongoose.connect('mongodb+srv://admin:energiesparen22@cluster0.kzvc9tg.mongodb.net/userdb?retryWrites=true&w=majority');
+    await mongoose.connect(MONGO_URI);
     next();
 });
 
-const userSchema = new mongoose.Schema({
-    id: String,
-    first_name: String,
-    last_name: String,
-    email: {
-        type: String,
-        unique: true
-    },
-    user_name: {
-        type: String,
-        unique: true
-    },
-    password: String,
-    url: String,
-    message: String
-});
-
-const commentSchema = new mongoose.Schema({
-    id: String,
-    userId: String,
-    userName: String,
-    date: String,
-    text: String
-});
-const postSchema = new mongoose.Schema({
-    id: String,
-    userId: String,
-    userName: String,
-    date: String,
-    title: String,
-    text: String,
-    link: String,
-    picture: String,
-    likes: [String],
-    comments:
-        [commentSchema],
-
-});
-
-const User = mongoose.model('User', userSchema);
-const Post = mongoose.model('Post', postSchema);
-
-
+//...................
 
 //Status Backend
 app.get('/status', (req, res) => {
@@ -236,11 +199,9 @@ app.get('/clear-cookie', (req, res) => {
 
 // get User Data
 app.get('/user-data', async (req, res) => {
-    console.log("fk", req.query.fk)
     try {
     let result = await User.findOne({ id: req.query.id })
 
-    console.log("result:", result, "\n")
 
     if(req.query.fk === 'myData') {
         console.log("myData")
@@ -254,13 +215,12 @@ app.get('/user-data', async (req, res) => {
       })
       console.log(result.url)
     } else if (req.query.fk === 'otherUser') {
-        console.log("otherUser wird benötigt")
+        // console.log("otherUser wird benötigt")
         res.status(200).send({
             user_name: result.user_name,
             url: result.url,
             message: result.message
         })
-        console.log(result.url)
     }
     } catch (error) {
         console.log("error")

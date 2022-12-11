@@ -6,6 +6,7 @@ const usePosts = () => {
 
   const [posts, setPosts] = useState(""); //Anscheinend muss zumindest einleererStringgesetzt werden, damit die Daten aus dem Backend geholt werden könnenEinfach nur"useState()" funktioniert nicht. Ob es an der verschachteltenStrukturdes Post-Objektsliegt?
 
+
   //............................................................
 
   // Posts laden
@@ -17,21 +18,31 @@ const usePosts = () => {
 
   //Post hinzufügen
   const addPost = (newPost) => {
+    console.log("newPost:",newPost)
     setPosts([...posts, newPost])
-    addPostsToBackend(newPost);
   }
+
 
   // fügt einen neuen, eingegebenen Kommentar zum aktuellen Post hinzu
   const addComment = (post, comment) => {
-    setPosts(...[posts], post.comments.push(comment))
+    setPosts(posts.map((e, i) => {
+      if (e.id === post.id) e.comments = [...e.comments, comment];
+      return e;
+    }));
     addCommentToBackend(post.id, comment)
   }
 
+
   // add Like
   const addLike = (post, userId) => {
-    setPosts(...[posts], post.likes.push(userId));
+    setPosts(posts.map((e, i) => {
+      if (e.id === post.id)  e.likes = [...e.likes, userId];
+      return e;
+    }));
     addLikeToBackend(post.id, userId);
   }
+
+
 
   // remove Like
   const removeLike = (post, userId) => {
@@ -46,25 +57,39 @@ const usePosts = () => {
 
   //............................................................
   //Backend Routen
+  const addPostsToBackend2 = async (newPost, formData, setInputVisible) => {
 
-  const addPostsToBackend = async (posts) => {
+    console.log("der neue Post ", newPost)
+
+    formData.append('id', newPost.id)
+    formData.append('userId', newPost.userId)
+    formData.append('userName', newPost.userName)
+    formData.append('date', newPost.date)
+    formData.append('title', newPost.title)
+    formData.append('text', newPost.text)
+    formData.append('link', newPost.link)
+    formData.append('picture', newPost.picture)
+    formData.append('likes', [])
+    formData.append('comments', [newPost.comments])
+
+    // console.log("formData:", formData.file)
 
     await fetch("/post", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(posts),
+        method: "POST",
+
+        body: formData
     })
-      .then((response) => response.json())
-      .then((data) => {
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("Success:", data);
+            setInputVisible(false);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+};
 
-
+//get Posts from Backend
   const getPostsFromBackend = async () => {
     await fetch("/posts")
       .then((response) => response.json())
@@ -143,7 +168,7 @@ const usePosts = () => {
 
   //...........................................................
 
-  return [posts, setPosts, addPost, addLike, removeLike, addComment, getPostsFromBackend];
+  return [posts, setPosts, addPost, addPostsToBackend2, addLike, removeLike, addComment, getPostsFromBackend];
 
 };
 

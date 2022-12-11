@@ -1,14 +1,16 @@
 
-
 //------------------------------------------------------
+
 
 const useHelpFunc = () => {
 
+    // const {posts} = useContext(AppContext)  <= funktioniert nicht in einem Hook
 
-    let postsArray = [];
 
     //...............................
     const defArray = (posts, userData, filter) => {
+
+        let postsArray = [];
 
         if (filter === 'alle') {
             postsArray = [...posts];
@@ -24,7 +26,7 @@ const useHelpFunc = () => {
     //----------------------------------
     const sort = (posts, userData, selection, filter ) => {
 
-        postsArray = defArray(posts, userData, filter);
+        let postsArray = defArray(posts, userData, filter);
 
         if (selection === "Likes") {
 
@@ -56,7 +58,43 @@ const useHelpFunc = () => {
         }
     }
 
-    return[sort];
+
+    //-
+    const getLength = (filter, posts, postsArray) => {
+        if (filter === 'alle') return (posts.length);
+        else if (filter === 'deine') return (postsArray.length);
+    }
+    // Berechnet die Indizes für den ersten und letzten anzuzeigenden Post neu,
+    // wenn auf "nach links blätern" angeklickt wurde
+    const getIndexLClick = (posts, postsArray, filter, steps,indexStart, setIndexStart,indexEnd, setIndexEnd) => {
+
+        const length = getLength(filter, posts, postsArray)
+
+        if (indexEnd < length) {
+            setIndexStart(indexStart - steps)
+            setIndexEnd(indexEnd - steps)
+        } else {
+            const tmpstart = indexStart
+            setIndexStart(indexStart - steps)
+            setIndexEnd(tmpstart)
+        }
+    }
+
+    // Berechnet die Indizes für den ersten und letzten anzuzeigenden Post neu,
+    // wenn auf "nach rechts blätern" angeklickt wurde
+ 
+    const getIndexRClick = (posts, filter, postsArray, steps,indexStart, setIndexStart,indexEnd, setIndexEnd) => {
+        const length = getLength(filter, posts, postsArray)
+
+        setIndexStart(indexStart + steps)
+
+        if ((indexEnd + steps) < length)
+            setIndexEnd(indexEnd + steps)
+        else
+            setIndexEnd(length)
+    }
+
+    return[sort, getIndexRClick, getIndexLClick];
 
 }
 

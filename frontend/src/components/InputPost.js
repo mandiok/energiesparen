@@ -18,7 +18,7 @@ import Box from "@mui/material/Box";
 
 const InputPost = () => {
 
-    const { userData } = useContext(AppContext);
+    const { userData, addPost, addPostsToBackend2 } = useContext(AppContext);
 
     const titelRef = useRef()
     const postRef = useRef()
@@ -32,6 +32,7 @@ const InputPost = () => {
     const [sendPost, setSendPost] = useState(false)
     const [picture, setPicture] = useState()
 
+    //..........................
 
     const createPost = () => {
         const newPost = {
@@ -53,6 +54,7 @@ const InputPost = () => {
         linkRef.current.value = "";
         inputRef.current.value = "";
 
+        addPost(newPost)
         setSendPost(!sendPost);
 
         if (picture) {
@@ -64,42 +66,9 @@ const InputPost = () => {
             var formData = new FormData();
         }
 
-        addPostsToBackend2(newPost, formData)
+        addPostsToBackend2(newPost, formData, setInputVisible)
         setPicture()
     }
-
-
-    const addPostsToBackend2 = async (newPost, formData) => {
-
-        console.log("der neue Post ", newPost)
-
-        formData.append('id', newPost.id)
-        formData.append('userId', newPost.userId)
-        formData.append('userName', newPost.userName)
-        formData.append('date', newPost.date)
-        formData.append('title', newPost.title)
-        formData.append('text', newPost.text)
-        formData.append('link', newPost.link)
-        formData.append('picture', newPost.picture)
-        formData.append('likes', [])
-        formData.append('comments', [newPost.comments])
-
-        console.log("formData:", formData.file)
-
-        await fetch("/post", {
-            method: "POST",
-
-            body: formData
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("Success:", data);
-                setInputVisible(false);
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-    };
 
 //.................................................
 

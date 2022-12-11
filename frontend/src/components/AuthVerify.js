@@ -34,7 +34,6 @@ const AuthVerify = () => {
       setToken(data.access)
       var decodedJwt = jwt_decode(data.access);
       setUserData(decodedJwt);
-      // console.log("test:", userData)
       setUser(decodedJwt.email);
 
     } else {
@@ -54,21 +53,19 @@ const AuthVerify = () => {
     const ls = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
     
     if (ls !== null) {
-      console.log("Prüfe, ob die Zeit abgelaufen ist.")
+      // console.log("Prüfe, ob die Zeit abgelaufen ist.")
       const decodedJwt = jwt_decode(ls.access)
       setUserData(decodedJwt);
-      // console.log("test:" ,userData)
       setUser(decodedJwt.email);
 
-      // expTime, setExpTime
-      console.log("Zeitdifferenz:", (decodedJwt.exp * 1000) - Date.now())
+      // console.log("Zeitdifferenz:", (decodedJwt.exp * 1000) - Date.now())
 
       if (decodedJwt.exp * 1000 > Date.now()) {
 
-        console.log("Zeit noch nicht abgelaufen. Refreshe den Zugangstoken.")
+        // console.log("Zeit noch nicht abgelaufen. Refreshe den Zugangstoken.")
         verifyToken(decodedJwt.email);
       } else {
-        console.log("Token abgelaufen")
+        // console.log("Token abgelaufen")
         logoutUser()
       }
     }
@@ -78,6 +75,7 @@ const AuthVerify = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, posts]);
+
 
   return;
 };
