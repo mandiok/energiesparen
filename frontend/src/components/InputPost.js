@@ -48,7 +48,6 @@ const InputPost = () => {
             comments: []
         }
 
-        console.log("newPost", newPost)
         titelRef.current.value = "";
         postRef.current.value = "";
         linkRef.current.value = "";
@@ -58,11 +57,11 @@ const InputPost = () => {
         setSendPost(!sendPost);
 
         if (picture) {
-            console.log("\n picture vorhanden \n")
+            // console.log("\n picture vorhanden \n")
             var formData = new FormData();
             formData.append('file', picture)
         } else {
-            console.log("\n kein picture vorhanden")
+            // console.log("\n kein picture vorhanden")
             var formData = new FormData();
         }
 

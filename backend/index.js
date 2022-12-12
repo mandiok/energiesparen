@@ -2,26 +2,28 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 const app = express()
 const port = 3001
-const mongoose = require('mongoose');
 const cors = require('cors');
 var jwt = require('jsonwebtoken');
 const multer = require("multer");
 const cookieparser = require('cookie-parser');
-const dotenv = require('dotenv');
-const cloudinary = require('cloudinary');
-const { promisify } = require('util');
-const fs = require('fs');
+
+const mongoose = require('mongoose');
 
 const User = require('./models/UserModel');
 const Post = require('./models/PostModel');
 
+const cloudinary = require('cloudinary');
+const { promisify } = require('util');
+const fs = require('fs');
+
+const dotenv = require('dotenv');
 dotenv.config()
 
 const MONGO_URI = process.env.MONGO_URI;
 
 var upload = multer();
 
-//.................
+//.................................
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
@@ -134,7 +136,7 @@ app.post('/login', async (req, res) => {
             },
             process.env.EXPRESS_APP_REFRESH_TOKEN_SECRET,
             {
-                expiresIn: '24h'
+                expiresIn: '48h'
             });
 
         // Assigning refresh token in http-only cookie 
@@ -142,7 +144,7 @@ app.post('/login', async (req, res) => {
             httpOnly: true,
             sameSite: 'None', secure: true,
             // maxAge: 24 * 60 * 60 * 1000 // 1 day
-            maxAge: 60 * 60 * 1000
+            maxAge: 48* 60 * 60 * 1000
         });
 
         // return res.json({ accessToken });

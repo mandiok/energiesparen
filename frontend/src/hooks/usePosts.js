@@ -18,7 +18,6 @@ const usePosts = () => {
 
   //Post hinzufügen
   const addPost = (newPost) => {
-    console.log("newPost:",newPost)
     setPosts([...posts, newPost])
   }
 
@@ -59,7 +58,6 @@ const usePosts = () => {
   //Backend Routen
   const addPostsToBackend2 = async (newPost, formData, setInputVisible) => {
 
-    console.log("der neue Post ", newPost)
 
     formData.append('id', newPost.id)
     formData.append('userId', newPost.userId)
@@ -81,7 +79,7 @@ const usePosts = () => {
     })
         .then((response) => response.json())
         .then((data) => {
-            console.log("Success:", data);
+            // console.log("Success:", data);
             setInputVisible(false);
         })
         .catch((error) => {
