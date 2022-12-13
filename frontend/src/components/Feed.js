@@ -62,7 +62,7 @@ const Feed = () => {
 
     useEffect(() => {
         setPostsArray(sort(posts, userData, selection, filter))
-    }, [selection, filter])
+    }, [selection, filter,posts])
 
     // -----------------------------------------------------------        
 

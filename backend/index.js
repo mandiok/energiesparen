@@ -194,6 +194,7 @@ app.post('/refreshtoken', async (req, res) => {
 })
 
 
+
 // Delete cookie
 app.get('/clear-cookie', (req, res) => {
     res.clearCookie('jwt').send();

@@ -17,7 +17,7 @@ const ProfilCard = () => {
 
     const [userPosts, setUserPosts] = useState(0)
     const [userLikes, setUserLikes] = useState(0)
-    
+
     const checkData = () => {
         let likes = 0;
         let postnumber = 0;
@@ -30,14 +30,17 @@ const ProfilCard = () => {
         setUserPosts(postnumber)
         setUserLikes(likes)
     }
-    
-    
+
+
     useEffect(() => {
-            checkData()
+        checkData()
     }, [])
 
+    useEffect(() => {
+        checkData()
+    }, [posts])
     //............................................................
-    
+
 
     if (posts)
         return (

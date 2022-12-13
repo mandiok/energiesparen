@@ -6,7 +6,6 @@ const usePosts = () => {
 
   const [posts, setPosts] = useState(""); //Anscheinend muss zumindest einleererStringgesetzt werden, damit die Daten aus dem Backend geholt werden könnenEinfach nur"useState()" funktioniert nicht. Ob es an der verschachteltenStrukturdes Post-Objektsliegt?
 
-
   //............................................................
 
   // Posts laden
@@ -53,6 +52,7 @@ const usePosts = () => {
 
     removeLikeFromBackend(post.id, userId);
   }
+  
 
   //............................................................
   //Backend Routen

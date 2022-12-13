@@ -74,7 +74,7 @@ const Post = ({ post }) => {
                 date: date,
                 text: commentRef.current.value,
             }
-            post.comments.push(comment)
+            // post.comments.push(comment)
             addComment(post, comment)
         }
         commentRef.current.value = "";
@@ -86,12 +86,12 @@ const Post = ({ post }) => {
     const newLikeClick = () => {
         if ((treecolored === false) && (post.likes.find(e => e === userData.id) === undefined)) {
             addLike(post, userData.id)
-            post.likes.push(userData.id)
+            // post.likes.push(userData.id)
             setTreecolored(!treecolored)
         } else if (treecolored === true) {
             removeLike(post, userData.id)
             const userIdIndex = post.likes.findIndex(e => e === userData.id)
-            const p = post.likes.splice(userIdIndex,1)
+            // const p = post.likes.splice(userIdIndex,1)
             setTreecolored(!treecolored)
         }
     }
